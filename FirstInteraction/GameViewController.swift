@@ -162,7 +162,7 @@ extension GameViewController: PiecePickerDelegate {
     
     func defaultPiece(tra: Int) -> PieceDescriptor {
 
-        let cube = SCNBox.init(width: 0.5, height: 2, length: 0.5, chamferRadius: 0)
+        let cube = SCNBox.init(width: 0.5, height: 1, length: 0.5, chamferRadius: 0)
         cube.firstMaterial?.diffuse.contents = UIImage.init(named: "walls")
         let cubeNode = SCNNode.init(geometry: cube)
         cubeNode.name = "cube"
@@ -172,19 +172,19 @@ extension GameViewController: PiecePickerDelegate {
             return PieceDescriptor.init(
                 pieceNode: cubeNode,
                 pieceGridSize: (width: 1, height: 1),
-                pieceRealSize: (width: 0.5, height: 2, depth: 0.5)
+                pieceRealSize: (width: 0.5, height: 1, depth: 0.5)
             )
         } else if tra == 1 {
             return PieceDescriptor.init(
                 pieceNode: cubeNode,
                 pieceGridSize: (width: 2, height: 1),
-                pieceRealSize: (width: 0.5, height: 2, depth: 0.5)
+                pieceRealSize: (width: 0.5, height: 1, depth: 0.5)
             )
         } else {
             return PieceDescriptor.init(
                 pieceNode: cubeNode,
                 pieceGridSize: (width: 2, height: 2),
-                pieceRealSize: (width: 0.5, height: 2, depth: 0.5)
+                pieceRealSize: (width: 0.5, height: 1, depth: 0.5)
             )
         }
     }

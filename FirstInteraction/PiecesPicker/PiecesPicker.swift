@@ -24,7 +24,6 @@ class PiecesPicker: UICollectionView {
         delegate = self
         dataSource = self
         register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-        
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -139,7 +139,7 @@ class SandBoxPlace: SCNNode {
         
         pieceDescriptor.pieceNode.pivot = SCNMatrix4MakeTranslation(
             0,
-            Float(pieceDescriptor.pieceRealSize.height/2),
+            1,
             0)
         pieceDescriptor.pieceNode.scale = pieceDescriptor.scaleToReach(gridSize: gridSize)
         pieceDescriptor.pieceNode.opacity = 0.5
@@ -210,7 +210,6 @@ class SandBoxPlace: SCNNode {
             
 //            addingPiece.pieceNode.pivot = SCNMatrix4MakeTranslation(-Float(addingPieceSize.width/2), Float(addingPieceSize.height/2), -Float(addingPieceSize.depth/2))
 
-            
             let physicsGeometry = SCNBox.init(width: addingPieceSize.width-0.1, height: addingPieceSize.height, length: addingPieceSize.depth-0.1, chamferRadius: 0)
             let physicsShape = SCNPhysicsShape.init(geometry: physicsGeometry, options: nil)
             
