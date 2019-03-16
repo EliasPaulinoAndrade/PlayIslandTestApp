@@ -133,13 +133,21 @@ class GameViewController: UIViewController {
             return .all
         }
     }
-
+    var teste = 0
 }
 
 extension GameViewController: PiecePickerDelegate {
     func piecePanDidBegan(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer) {
-        
-        sandBox.pieceDragNeedBegan(withPiece: defaultPiece())
+        if teste == 0 {
+            sandBox.pieceDragNeedBegan(withPiece: defaultPiece(tra: 0))
+            teste = 1
+        } else if teste == 1 {
+            sandBox.pieceDragNeedBegan(withPiece: defaultPiece(tra: 1))
+            teste = 2
+        } else if teste == 2 {
+            sandBox.pieceDragNeedBegan(withPiece: defaultPiece(tra: 2))
+            teste = 0
+        }
     }
     
     func piecePanDidEnded(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer) {
@@ -152,7 +160,7 @@ extension GameViewController: PiecePickerDelegate {
         sandBox.handlePieceDrag(inPoint: touchPoint)
     }
     
-    func defaultPiece() -> SCNNode {
+    func defaultPiece(tra: Int) -> PieceDescriptor {
 
         let cube = SCNBox.init(width: 0.5, height: 2, length: 0.5, chamferRadius: 0)
         cube.firstMaterial?.diffuse.contents = UIImage.init(named: "walls")
@@ -160,6 +168,24 @@ extension GameViewController: PiecePickerDelegate {
         cubeNode.name = "cube"
         cubeNode.pivot = SCNMatrix4MakeTranslation(0, -1, 0)
         
-        return cubeNode
+        if tra == 0 {
+            return PieceDescriptor.init(
+                pieceNode: cubeNode,
+                pieceGridSize: (width: 1, height: 1),
+                pieceRealSize: (width: 0.5, height: 2, depth: 0.5)
+            )
+        } else if tra == 1 {
+            return PieceDescriptor.init(
+                pieceNode: cubeNode,
+                pieceGridSize: (width: 2, height: 1),
+                pieceRealSize: (width: 0.5, height: 2, depth: 0.5)
+            )
+        } else {
+            return PieceDescriptor.init(
+                pieceNode: cubeNode,
+                pieceGridSize: (width: 2, height: 2),
+                pieceRealSize: (width: 0.5, height: 2, depth: 0.5)
+            )
+        }
     }
 }

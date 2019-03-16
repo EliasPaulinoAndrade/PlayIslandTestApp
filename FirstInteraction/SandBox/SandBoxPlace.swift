@@ -20,7 +20,7 @@ class SandBoxPlace: SCNNode {
     private(set) var overlayDistance: Float
     private(set) var minimumNumberOfLines: Int
     
-    private var addingPiece: SCNNode?
+    private var addingPiece: PieceDescriptor?
     
     lazy private(set) var heights: [[Float]] = {
         var heights = [Array<Float>]()
@@ -58,7 +58,6 @@ class SandBoxPlace: SCNNode {
         }
         return Int(width/gridSize)
     }()
-    
     
     lazy var placePlaneNode: SCNNode = {
         let placePlane = SCNBox.init(width: self.width, height: self.height, length: 1, chamferRadius: 0)
@@ -128,13 +127,24 @@ class SandBoxPlace: SCNNode {
         return CGPoint.init(x: gridPositionX, y: gridPositionY)
     }
     
-    func pieceDragNeedBegan(withPiece piece: SCNNode) {
+    func pieceDragNeedBegan(withPiece piece: PieceDescriptor) {
         
+        var pieceDescriptor = piece
+
         let pieceOwnerNode = SCNNode.init()
         
-        pieceOwnerNode.addChildNode(piece)
+        pieceOwnerNode.addChildNode(pieceDescriptor.pieceNode)
         
-        self.addingPiece = pieceOwnerNode
+        pieceDescriptor.pieceNode = pieceOwnerNode
+        
+        pieceDescriptor.pieceNode.pivot = SCNMatrix4MakeTranslation(
+            0,
+            Float(pieceDescriptor.pieceRealSize.height/2),
+            0)
+        pieceDescriptor.pieceNode.scale = pieceDescriptor.scaleToReach(gridSize: gridSize)
+        pieceDescriptor.pieceNode.opacity = 0.5
+        
+        self.addingPiece = pieceDescriptor
     }
     
     func handlePieceDrag(inPoint point: CGPoint) {
@@ -144,34 +154,51 @@ class SandBoxPlace: SCNNode {
             return
         }
 
-        var piecePoint = arHitResult.worldCoordinates
-        
-        let pieceReal2DPoint = positionFor(gridPosition: gridPosition(forPosition: CGPoint.init(x: CGFloat(piecePoint.x), y: CGFloat(piecePoint.z))))
-        
-        piecePoint.x = Float(pieceReal2DPoint.x)
-        piecePoint.z = Float(pieceReal2DPoint.y)
-        
-        var overlayPoint = piecePoint
-        
-        if arHitResult.node == overlayPlaneNode {
-            overlayPoint.y -= self.overlayDistance - 0.002
-        } else {
-            overlayPoint.y += 0.002
-        }
-        
-        floorOverlayNode.runAction(SCNAction.move(to: overlayPoint, duration: 0.05))
-        
-        floorOverlayNode.opacity = 0.5
-    
-        if floorOverlayNode.parent == nil {
-            sceneView?.scene?.rootNode.addChildNode(floorOverlayNode)
-        }
-        
         if let addingNode = self.addingPiece {
-            addingNode.runAction(SCNAction.move(to: piecePoint, duration: 0.05))
             
-            if addingNode.parent == nil {
-                sceneView?.scene?.rootNode.addChildNode(addingNode)
+            var piecePoint = arHitResult.worldCoordinates
+            
+            let pieceReal2DPoint = positionFor(gridPosition: gridPosition(forPosition: CGPoint.init(x: CGFloat(piecePoint.x), y: CGFloat(piecePoint.z))))
+            
+            let addingObjectGridSize = addingNode.pieceGridSize
+            let addingObjectRealSize = addingNode.scaledSize(gridSize: gridSize)
+            
+            piecePoint.x = Float(pieceReal2DPoint.x)
+            piecePoint.z = Float(pieceReal2DPoint.y)
+            
+            var overlayPoint = piecePoint
+            
+            if arHitResult.node == overlayPlaneNode {
+                overlayPoint.y -= self.overlayDistance - 0.002
+            } else {
+                overlayPoint.y += 0.002
+            }
+            
+            overlayPoint.x += Float(CGFloat(addingNode.pieceGridSize.width - 1) * gridSize)
+            overlayPoint.z += Float(CGFloat(addingNode.pieceGridSize.height - 1) * gridSize)
+            
+            floorOverlayNode.runAction(SCNAction.move(to: overlayPoint, duration: 0.05))
+            
+            floorOverlayNode.opacity = 0.5
+            
+            if floorOverlayNode.parent == nil {
+                sceneView?.scene?.rootNode.addChildNode(floorOverlayNode)
+            }
+            
+            piecePoint.x -= Float(addingObjectRealSize.width/2)
+            piecePoint.z -= Float(addingObjectRealSize.depth/2)
+            piecePoint.y += Float(addingObjectRealSize.height/2)
+            
+            let floorRealSizeX = gridSize * CGFloat(addingObjectGridSize.width)
+            let floorRealSizeY = gridSize * CGFloat(addingObjectGridSize.height)
+            
+            floorOverlayNode.scale = SCNVector3.init(addingObjectGridSize.width, 1, addingObjectGridSize.height)
+            floorOverlayNode.pivot = SCNMatrix4MakeTranslation(Float(floorRealSizeX/2), 0, Float(floorRealSizeY/2))
+            
+            addingNode.pieceNode.runAction(SCNAction.move(to: piecePoint, duration: 0.05))
+            
+            if addingNode.pieceNode.parent == nil {
+                sceneView?.scene?.rootNode.addChildNode(addingNode.pieceNode)
             }
         }
     }
@@ -179,18 +206,23 @@ class SandBoxPlace: SCNNode {
     func pieceDragNeedEnd() {
         if let addingPiece = self.addingPiece {
             let gridSize = self.gridSize
+            let addingPieceSize = addingPiece.scaledSize(gridSize: gridSize)
             
-            addingPiece.pivot = SCNMatrix4MakeTranslation(0, 1, 0)
-            addingPiece.position.y += 20
+//            addingPiece.pieceNode.pivot = SCNMatrix4MakeTranslation(-Float(addingPieceSize.width/2), Float(addingPieceSize.height/2), -Float(addingPieceSize.depth/2))
+
             
-            let physicsGeometry = SCNBox.init(width: gridSize, height: 2, length: gridSize, chamferRadius: 0)
+            let physicsGeometry = SCNBox.init(width: addingPieceSize.width-0.1, height: addingPieceSize.height, length: addingPieceSize.depth-0.1, chamferRadius: 0)
             let physicsShape = SCNPhysicsShape.init(geometry: physicsGeometry, options: nil)
             
-            addingPiece.physicsBody = SCNPhysicsBody.init(type: .dynamic, shape: physicsShape)
+            addingPiece.pieceNode.physicsBody = SCNPhysicsBody.init(type: .dynamic, shape: physicsShape)
             
-            addingPiece.physicsBody?.angularDamping = 1
-            addingPiece.physicsBody?.friction = 1
-            addingPiece.physicsBody?.restitution = 0
+            addingPiece.pieceNode.physicsBody?.angularDamping = 1
+            addingPiece.pieceNode.physicsBody?.friction = 1
+            addingPiece.pieceNode.physicsBody?.restitution = 0
+            addingPiece.pieceNode.opacity = 1
+            
+//            addingPiece.pieceNode.pivot = SCNMatrix4MakeTranslation(Float(addingPieceSize.width/2), -Float(addingPieceSize.height/2), Float(addingPieceSize.depth/2))
+
         }
         
         floorOverlayNode.opacity = 0

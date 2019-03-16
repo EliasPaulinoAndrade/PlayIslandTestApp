@@ -17,6 +17,7 @@
 		E3EC7321223C261E00AEB8DD /* SandBoxPlace.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EC7320223C261E00AEB8DD /* SandBoxPlace.swift */; };
 		E3EC7325223C321900AEB8DD /* PiecesPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EC7324223C321900AEB8DD /* PiecesPicker.swift */; };
 		E3EC7328223C588A00AEB8DD /* PiecePickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EC7327223C588A00AEB8DD /* PiecePickerDelegate.swift */; };
+		E3EC732B223D0F7D00AEB8DD /* PieceDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EC732A223D0F7D00AEB8DD /* PieceDescriptor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		E3EC7320223C261E00AEB8DD /* SandBoxPlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SandBoxPlace.swift; sourceTree = "<group>"; };
 		E3EC7324223C321900AEB8DD /* PiecesPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiecesPicker.swift; sourceTree = "<group>"; };
 		E3EC7327223C588A00AEB8DD /* PiecePickerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiecePickerDelegate.swift; sourceTree = "<group>"; };
+		E3EC732A223D0F7D00AEB8DD /* PieceDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceDescriptor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				E3EC7320223C261E00AEB8DD /* SandBoxPlace.swift */,
+				E3EC732A223D0F7D00AEB8DD /* PieceDescriptor.swift */,
 			);
 			path = SandBox;
 			sourceTree = "<group>";
@@ -179,6 +182,7 @@
 				E3EC7328223C588A00AEB8DD /* PiecePickerDelegate.swift in Sources */,
 				E3EC7321223C261E00AEB8DD /* SandBoxPlace.swift in Sources */,
 				E3EC7325223C321900AEB8DD /* PiecesPicker.swift in Sources */,
+				E3EC732B223D0F7D00AEB8DD /* PieceDescriptor.swift in Sources */,
 				E3EC730D223C1B6200AEB8DD /* GameViewController.swift in Sources */,
 				E3EC7309223C1B6200AEB8DD /* AppDelegate.swift in Sources */,
 			);
