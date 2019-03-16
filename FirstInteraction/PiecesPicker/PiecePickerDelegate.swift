@@ -11,7 +11,7 @@ import CoreGraphics
 import UIKit
 
 protocol PiecePickerDelegate: AnyObject {
-    func piecePanDidEnded(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer)
-    func piecePanDidChange(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer)
-    func piecePanDidBegan(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer)
+    func piecePanDidEnded(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer, atPosition position: Int)
+    func piecePanDidChange(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer, atPosition position: Int)
+    func piecePanDidBegan(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer, atPosition position: Int)
 }

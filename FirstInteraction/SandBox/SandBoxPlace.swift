@@ -137,10 +137,6 @@ class SandBoxPlace: SCNNode {
         
         pieceDescriptor.pieceNode = pieceOwnerNode
         
-        pieceDescriptor.pieceNode.pivot = SCNMatrix4MakeTranslation(
-            0,
-            1,
-            0)
         pieceDescriptor.pieceNode.scale = pieceDescriptor.scaleToReach(gridSize: gridSize)
         pieceDescriptor.pieceNode.opacity = 0.5
         
@@ -205,10 +201,9 @@ class SandBoxPlace: SCNNode {
     
     func pieceDragNeedEnd() {
         if let addingPiece = self.addingPiece {
+            
             let gridSize = self.gridSize
             let addingPieceSize = addingPiece.scaledSize(gridSize: gridSize)
-            
-//            addingPiece.pieceNode.pivot = SCNMatrix4MakeTranslation(-Float(addingPieceSize.width/2), Float(addingPieceSize.height/2), -Float(addingPieceSize.depth/2))
 
             let physicsGeometry = SCNBox.init(width: addingPieceSize.width-0.1, height: addingPieceSize.height, length: addingPieceSize.depth-0.1, chamferRadius: 0)
             let physicsShape = SCNPhysicsShape.init(geometry: physicsGeometry, options: nil)
@@ -219,9 +214,6 @@ class SandBoxPlace: SCNNode {
             addingPiece.pieceNode.physicsBody?.friction = 1
             addingPiece.pieceNode.physicsBody?.restitution = 0
             addingPiece.pieceNode.opacity = 1
-            
-//            addingPiece.pieceNode.pivot = SCNMatrix4MakeTranslation(Float(addingPieceSize.width/2), -Float(addingPieceSize.height/2), Float(addingPieceSize.depth/2))
-
         }
         
         floorOverlayNode.opacity = 0

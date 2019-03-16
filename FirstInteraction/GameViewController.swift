@@ -13,7 +13,15 @@ import SceneKit
 class GameViewController: UIViewController {
     
     lazy var piecesPicker: PiecesPicker = {
-        let piecesPicker = PiecesPicker.init()
+        
+        let piecesImages = [
+            UIImage.init(named: "walls"),
+            UIImage.init(named: "walls"),
+            UIImage.init(named: "walls"),
+            UIImage.init(named: "walls"),
+            UIImage.init(named: "walls")
+        ]
+        let piecesPicker = PiecesPicker.init(piecesImages: piecesImages)
         piecesPicker.piecesDelegate = self
         
         return piecesPicker
@@ -137,55 +145,90 @@ class GameViewController: UIViewController {
 }
 
 extension GameViewController: PiecePickerDelegate {
-    func piecePanDidBegan(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer) {
-        if teste == 0 {
-            sandBox.pieceDragNeedBegan(withPiece: defaultPiece(tra: 0))
-            teste = 1
-        } else if teste == 1 {
-            sandBox.pieceDragNeedBegan(withPiece: defaultPiece(tra: 1))
-            teste = 2
-        } else if teste == 2 {
-            sandBox.pieceDragNeedBegan(withPiece: defaultPiece(tra: 2))
-            teste = 0
+    func piecePanDidBegan(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer, atPosition position: Int) {
+        if let descriptor = defaultPiece(type: position) {
+            sandBox.pieceDragNeedBegan(withPiece: descriptor)
         }
     }
     
-    func piecePanDidEnded(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer) {
+    func piecePanDidEnded(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer, atPosition position: Int) {
         sandBox.pieceDragNeedEnd()
     }
     
-    func piecePanDidChange(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer) {
+    func piecePanDidChange(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer, atPosition position: Int) {
         
         let touchPoint = gestureRecognizer.location(in: sceneView)
         sandBox.handlePieceDrag(inPoint: touchPoint)
     }
     
-    func defaultPiece(tra: Int) -> PieceDescriptor {
+    func defaultPiece(type: Int) -> PieceDescriptor? {
 
         let cube = SCNBox.init(width: 0.5, height: 1, length: 0.5, chamferRadius: 0)
         cube.firstMaterial?.diffuse.contents = UIImage.init(named: "walls")
         let cubeNode = SCNNode.init(geometry: cube)
         cubeNode.name = "cube"
-        cubeNode.pivot = SCNMatrix4MakeTranslation(0, -1, 0)
         
-        if tra == 0 {
+        switch type {
+        case 0:
             return PieceDescriptor.init(
                 pieceNode: cubeNode,
                 pieceGridSize: (width: 1, height: 1),
                 pieceRealSize: (width: 0.5, height: 1, depth: 0.5)
             )
-        } else if tra == 1 {
+        case 1:
             return PieceDescriptor.init(
                 pieceNode: cubeNode,
                 pieceGridSize: (width: 2, height: 1),
                 pieceRealSize: (width: 0.5, height: 1, depth: 0.5)
             )
-        } else {
+        case 2:
             return PieceDescriptor.init(
                 pieceNode: cubeNode,
                 pieceGridSize: (width: 2, height: 2),
                 pieceRealSize: (width: 0.5, height: 1, depth: 0.5)
             )
+        case 3:
+            let bezier = UIBezierPath.init()
+            bezier.move(to: CGPoint.init(x: -0.25, y: -0.25))
+            bezier.addLine(to: CGPoint.init(x: 0.25, y: -0.25))
+            bezier.addLine(to: CGPoint.init(x: 0, y: 0.25))
+            bezier.addLine(to: CGPoint.init(x: -0.25, y: -0.25))
+            
+            let telhado = SCNShape.init(path: bezier, extrusionDepth: 0.5)
+            telhado.firstMaterial?.diffuse.contents = UIImage.init(named: "walls")
+            let telhadoNode = SCNNode.init(geometry: telhado)
+            
+            return PieceDescriptor.init(
+                pieceNode: telhadoNode,
+                pieceGridSize: (width: 1, height: 1),
+                pieceRealSize: (width: 0.5, height: 0.5, depth: 0.5)
+            )
+        case 4:
+            let bezierCalcado = UIBezierPath.init()
+            
+            bezierCalcado.move(to: CGPoint.init(x: -9, y: -9))
+            
+            bezierCalcado.addLine(to: CGPoint.init(x: -5, y: -9))
+            bezierCalcado.addLine(to: CGPoint.init(x: -5, y: 1))
+            bezierCalcado.addQuadCurve(to: CGPoint.init(x: 5, y: 1), controlPoint: CGPoint.init(x: 0, y: 9))
+            bezierCalcado.addLine(to: CGPoint.init(x: 5, y: -9))
+            bezierCalcado.addLine(to: CGPoint.init(x: 9, y: -9))
+            bezierCalcado.addLine(to: CGPoint.init(x: 9, y: 9))
+            bezierCalcado.addLine(to: CGPoint.init(x: -9, y: 9))
+            
+            bezierCalcado.close()
+            
+            let calcado = SCNShape.init(path: bezierCalcado, extrusionDepth: 16)
+            calcado.firstMaterial?.diffuse.contents = UIImage.init(named: "walls")
+            let calcadoNode = SCNNode.init(geometry: calcado)
+            
+            return PieceDescriptor.init(
+                pieceNode: calcadoNode,
+                pieceGridSize: (width: 1, height: 1),
+                pieceRealSize: (width: 18, height: 18, depth: 16)
+            )
+        default:
+            return nil
         }
     }
 }

@@ -12,12 +12,15 @@ class PiecesPicker: UICollectionView {
     
     weak var piecesDelegate: PiecePickerDelegate?
     
-    init() {
+    private(set) var piecesImages: [UIImage?]
+    
+    init(piecesImages: [UIImage?]) {
         let layout = UICollectionViewFlowLayout.init()
 
         layout.sectionInset = UIEdgeInsets.init(top: 10, left: 10, bottom: 10, right: 10)
         layout.scrollDirection = UICollectionView.ScrollDirection.horizontal
         
+        self.piecesImages = piecesImages
         super.init(frame: CGRect.zero, collectionViewLayout: layout)
         
         backgroundColor = UIColor.red
@@ -49,7 +52,7 @@ class PiecesPicker: UICollectionView {
 
 extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return piecesImages.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -70,7 +73,7 @@ extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewData
             )
         )
         
-        imageView.image = UIImage.init(named: "walls")
+        imageView.image = piecesImages[indexPath.row]
         
         cell.addGestureRecognizer(
             UILongPressGestureRecognizer.init(
@@ -87,16 +90,21 @@ extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewData
     
     @objc func cellWasLongPressed(longPressRecognizer: UILongPressGestureRecognizer) {
         
+        guard let cellView = longPressRecognizer.view as? UICollectionViewCell,
+              let cellPosition = indexPath(for: cellView)?.row else {
+            return
+        }
+        
         switch longPressRecognizer.state {
         case .began:
             
-            piecesDelegate?.piecePanDidBegan(withGestureRecognizer: longPressRecognizer)
+            piecesDelegate?.piecePanDidBegan(withGestureRecognizer: longPressRecognizer, atPosition: cellPosition)
         case .ended:
             
-            piecesDelegate?.piecePanDidEnded(withGestureRecognizer: longPressRecognizer)
+            piecesDelegate?.piecePanDidEnded(withGestureRecognizer: longPressRecognizer, atPosition: cellPosition)
         case .changed:
             
-            piecesDelegate?.piecePanDidChange(withGestureRecognizer: longPressRecognizer)
+            piecesDelegate?.piecePanDidChange(withGestureRecognizer: longPressRecognizer, atPosition: cellPosition)
         default:
             break
         }
