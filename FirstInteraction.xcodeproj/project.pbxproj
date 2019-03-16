@@ -13,6 +13,10 @@
 		E3EC7310223C1B6200AEB8DD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E3EC730E223C1B6200AEB8DD /* Main.storyboard */; };
 		E3EC7312223C1B6400AEB8DD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E3EC7311223C1B6400AEB8DD /* Assets.xcassets */; };
 		E3EC7315223C1B6400AEB8DD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E3EC7313223C1B6400AEB8DD /* LaunchScreen.storyboard */; };
+		E3EC731E223C1F7A00AEB8DD /* SCNVector3+zero.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EC731D223C1F7A00AEB8DD /* SCNVector3+zero.swift */; };
+		E3EC7321223C261E00AEB8DD /* SandBoxPlace.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EC7320223C261E00AEB8DD /* SandBoxPlace.swift */; };
+		E3EC7325223C321900AEB8DD /* PiecesPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EC7324223C321900AEB8DD /* PiecesPicker.swift */; };
+		E3EC7328223C588A00AEB8DD /* PiecePickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EC7327223C588A00AEB8DD /* PiecePickerDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +28,10 @@
 		E3EC7311223C1B6400AEB8DD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E3EC7314223C1B6400AEB8DD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E3EC7316223C1B6400AEB8DD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E3EC731D223C1F7A00AEB8DD /* SCNVector3+zero.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNVector3+zero.swift"; sourceTree = "<group>"; };
+		E3EC7320223C261E00AEB8DD /* SandBoxPlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SandBoxPlace.swift; sourceTree = "<group>"; };
+		E3EC7324223C321900AEB8DD /* PiecesPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiecesPicker.swift; sourceTree = "<group>"; };
+		E3EC7327223C588A00AEB8DD /* PiecePickerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiecePickerDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +64,9 @@
 		E3EC7307223C1B6200AEB8DD /* FirstInteraction */ = {
 			isa = PBXGroup;
 			children = (
+				E3EC7323223C31DC00AEB8DD /* PiecesPicker */,
+				E3EC731F223C260D00AEB8DD /* SandBox */,
+				E3EC731C223C1F5A00AEB8DD /* extensions */,
 				E3EC7308223C1B6200AEB8DD /* AppDelegate.swift */,
 				E3EC730A223C1B6200AEB8DD /* art.scnassets */,
 				E3EC730C223C1B6200AEB8DD /* GameViewController.swift */,
@@ -65,6 +76,31 @@
 				E3EC7316223C1B6400AEB8DD /* Info.plist */,
 			);
 			path = FirstInteraction;
+			sourceTree = "<group>";
+		};
+		E3EC731C223C1F5A00AEB8DD /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E3EC731D223C1F7A00AEB8DD /* SCNVector3+zero.swift */,
+			);
+			path = extensions;
+			sourceTree = "<group>";
+		};
+		E3EC731F223C260D00AEB8DD /* SandBox */ = {
+			isa = PBXGroup;
+			children = (
+				E3EC7320223C261E00AEB8DD /* SandBoxPlace.swift */,
+			);
+			path = SandBox;
+			sourceTree = "<group>";
+		};
+		E3EC7323223C31DC00AEB8DD /* PiecesPicker */ = {
+			isa = PBXGroup;
+			children = (
+				E3EC7324223C321900AEB8DD /* PiecesPicker.swift */,
+				E3EC7327223C588A00AEB8DD /* PiecePickerDelegate.swift */,
+			);
+			path = PiecesPicker;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,6 +175,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E3EC731E223C1F7A00AEB8DD /* SCNVector3+zero.swift in Sources */,
+				E3EC7328223C588A00AEB8DD /* PiecePickerDelegate.swift in Sources */,
+				E3EC7321223C261E00AEB8DD /* SandBoxPlace.swift in Sources */,
+				E3EC7325223C321900AEB8DD /* PiecesPicker.swift in Sources */,
 				E3EC730D223C1B6200AEB8DD /* GameViewController.swift in Sources */,
 				E3EC7309223C1B6200AEB8DD /* AppDelegate.swift in Sources */,
 			);

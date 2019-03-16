@@ -11,94 +11,110 @@ import QuartzCore
 import SceneKit
 
 class GameViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    
+    lazy var piecesPicker: PiecesPicker = {
+        let piecesPicker = PiecesPicker.init()
+        piecesPicker.piecesDelegate = self
         
-        // create a new scene
-        let scene = SCNScene(named: "art.scnassets/ship.scn")!
-        
-        // create and add a camera to the scene
+        return piecesPicker
+    }()
+    
+    lazy var cameraNode: SCNNode = {
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
-        scene.rootNode.addChildNode(cameraNode)
-        
-        // place the camera
         cameraNode.position = SCNVector3(x: 0, y: 0, z: 15)
         
+        return cameraNode
+    }()
+    
+    lazy var lightNode: SCNNode = {
         // create and add a light to the scene
         let lightNode = SCNNode()
         lightNode.light = SCNLight()
         lightNode.light!.type = .omni
         lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
-        scene.rootNode.addChildNode(lightNode)
         
+        return lightNode
+    }()
+    
+    lazy var ambientLightNode: SCNNode = {
         // create and add an ambient light to the scene
         let ambientLightNode = SCNNode()
         ambientLightNode.light = SCNLight()
         ambientLightNode.light!.type = .ambient
         ambientLightNode.light!.color = UIColor.darkGray
+        
+        return ambientLightNode
+    }()
+    
+    lazy var sandBox: SandBoxPlace = {
+        let sandBox = SandBoxPlace.init(withHeight: 10, width: 10, andOverlayDistance: 5, sceneView: sceneView)
+        sandBox.position = SCNVector3.zero
+        sandBox.position.y -= 2
+        
+        return sandBox
+    }()
+    
+    lazy var sceneView: SCNView = {
+        
+        return SCNView.init()
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.view = UIView()
+        let scene = SCNScene.init()
+        
+        scene.rootNode.addChildNode(cameraNode)
+        scene.rootNode.addChildNode(lightNode)
         scene.rootNode.addChildNode(ambientLightNode)
+        scene.rootNode.addChildNode(sandBox)
         
-        // retrieve the ship node
-        let ship = scene.rootNode.childNode(withName: "ship", recursively: true)!
+        setupSceneView()
+        self.view.addSubview(piecesPicker)
         
-        // animate the 3d object
-        ship.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 2, z: 0, duration: 1)))
-        
-        // retrieve the SCNView
-        let scnView = self.view as! SCNView
         
         // set the scene to the view
-        scnView.scene = scene
+        sceneView.scene = scene
+    }
+    
+    func setupSceneView() {
+        self.view.addSubview(sceneView)
+        sceneView.translatesAutoresizingMaskIntoConstraints = false
+        
+        sceneView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        sceneView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        sceneView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        sceneView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         
         // allows the user to manipulate the camera
-        scnView.allowsCameraControl = true
+        sceneView.allowsCameraControl = true
         
         // show statistics such as fps and timing information
-        scnView.showsStatistics = true
+        sceneView.showsStatistics = true
+        
+        sceneView.debugOptions = .showPhysicsShapes
         
         // configure the view
-        scnView.backgroundColor = UIColor.black
+        sceneView.backgroundColor = UIColor.black
         
         // add a tap gesture recognizer
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        scnView.addGestureRecognizer(tapGesture)
+        sceneView.addGestureRecognizer(tapGesture)
     }
     
     @objc
     func handleTap(_ gestureRecognize: UIGestureRecognizer) {
-        // retrieve the SCNView
-        let scnView = self.view as! SCNView
         
         // check what nodes are tapped
-        let p = gestureRecognize.location(in: scnView)
-        let hitResults = scnView.hitTest(p, options: [:])
+        let p = gestureRecognize.location(in: sceneView)
+        let hitResults = sceneView.hitTest(p, options: [:])
         // check that we clicked on at least one object
         if hitResults.count > 0 {
             // retrieved the first clicked object
             let result = hitResults[0]
             
-            // get its material
-            let material = result.node.geometry!.firstMaterial!
-            
-            // highlight it
-            SCNTransaction.begin()
-            SCNTransaction.animationDuration = 0.5
-            
-            // on completion - unhighlight
-            SCNTransaction.completionBlock = {
-                SCNTransaction.begin()
-                SCNTransaction.animationDuration = 0.5
-                
-                material.emission.contents = UIColor.black
-                
-                SCNTransaction.commit()
-            }
-            
-            material.emission.contents = UIColor.red
-            
-            SCNTransaction.commit()
         }
     }
     
@@ -118,4 +134,34 @@ class GameViewController: UIViewController {
         }
     }
 
+}
+
+extension GameViewController: PiecePickerDelegate {
+    func piecePanDidBegan(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer) {
+        
+        sandBox.pieceDragNeedBegan(withPiece: defaultPiece())
+    }
+    
+    func piecePanDidEnded(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer) {
+        sandBox.pieceDragNeedEnd()
+    }
+    
+    func piecePanDidChange(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer) {
+        
+        let touchPoint = gestureRecognizer.location(in: sceneView)
+        sandBox.handlePieceDrag(inPoint: touchPoint)
+    }
+    
+    func defaultPiece() -> SCNNode {
+
+        let cube = SCNBox.init(width: 0.5, height: 2, length: 0.5, chamferRadius: 0)
+        cube.firstMaterial?.diffuse.contents = UIImage.init(named: "walls")
+        let cubeNode = SCNNode.init(geometry: cube)
+        cubeNode.name = "cube"
+        cubeNode.pivot = SCNMatrix4MakeTranslation(0, -1, 0)
+        
+//        cubeNode.eulerAngles.x = .pi/Float(2)
+        
+        return cubeNode
+    }
 }
