@@ -22,6 +22,8 @@ class SandBoxPlace: SCNNode {
     
     private var addingPiece: PieceDescriptor?
     
+    private var pieces: [SCNNode: PieceDescriptor] = [:]
+    
     lazy private(set) var heights: [[Float]] = {
         var heights = [Array<Float>]()
         for lineIndex in 0..<minimumNumberOfLines {
@@ -76,6 +78,7 @@ class SandBoxPlace: SCNNode {
         placePlaneNode.physicsBody?.angularDamping = 1
         placePlaneNode.physicsBody?.friction = 1
         placePlaneNode.physicsBody?.restitution = 0
+        placePlaneNode.categoryBitMask = 2
         
         return placePlaneNode
     }()
@@ -89,7 +92,7 @@ class SandBoxPlace: SCNNode {
         overlayPlaneNode.position = SCNVector3.zero
         overlayPlaneNode.position.y += self.overlayDistance
         overlayPlaneNode.eulerAngles.x += Float.pi / 2.0
-        overlayPlaneNode.opacity = 0.2
+        overlayPlaneNode.opacity = 0.01
         
         return overlayPlaneNode
     }()
@@ -106,10 +109,42 @@ class SandBoxPlace: SCNNode {
         
         addChildNode(placePlaneNode)
         addChildNode(overlayPlaneNode)
+        
+        sceneView.addGestureRecognizer(UILongPressGestureRecognizer.init(target: self, action: #selector(sceneWasLongPressed(longPressGestureRecognizer:))))
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func sceneWasLongPressed(longPressGestureRecognizer: UILongPressGestureRecognizer) {
+        
+        let point = longPressGestureRecognizer.location(in: sceneView)
+        
+        guard let arHitResult = sceneView?.hitTest(point, options: [SCNHitTestOption.boundingBoxOnly: true, SCNHitTestOption.categoryBitMask: 2]).first,
+              arHitResult.node != overlayPlaneNode && arHitResult.node != placePlaneNode,
+              let pieceDescriptor = pieces[arHitResult.node],
+              self.addingPiece == nil else {
+            
+            if addingPiece != nil {
+                switch longPressGestureRecognizer.state {
+            
+                case .changed:
+                    handlePieceDrag(inPoint: point)
+                default:
+                    pieceDragNeedEnd()
+                }
+            }
+                
+            return
+        }
+        
+        if longPressGestureRecognizer.state == .began {
+            pieceDescriptor.pieceNode.opacity = 0.5
+            
+            pieceDescriptor.pieceNode.physicsBody = nil
+            self.addingPiece = pieceDescriptor
+        }
     }
     
     func gridPosition(forPosition position: CGPoint) -> GridPosition {
@@ -129,16 +164,11 @@ class SandBoxPlace: SCNNode {
     
     func pieceDragNeedBegan(withPiece piece: PieceDescriptor) {
         
-        var pieceDescriptor = piece
+        let pieceDescriptor = piece
 
-        let pieceOwnerNode = SCNNode.init()
-        
-        pieceOwnerNode.addChildNode(pieceDescriptor.pieceNode)
-        
-        pieceDescriptor.pieceNode = pieceOwnerNode
-        
         pieceDescriptor.pieceNode.scale = pieceDescriptor.scaleToReach(gridSize: gridSize)
         pieceDescriptor.pieceNode.opacity = 0.5
+        pieceDescriptor.pieceNode.categoryBitMask = 2
         
         self.addingPiece = pieceDescriptor
     }
@@ -205,15 +235,24 @@ class SandBoxPlace: SCNNode {
             let gridSize = self.gridSize
             let addingPieceSize = addingPiece.scaledSize(gridSize: gridSize)
 
-            let physicsGeometry = SCNBox.init(width: addingPieceSize.width-0.1, height: addingPieceSize.height, length: addingPieceSize.depth-0.1, chamferRadius: 0)
+            let physicsGeometry = SCNBox.init(
+                width: addingPieceSize.width - 0.1,
+                height: addingPieceSize.height,
+                length: addingPieceSize.depth - 0.1,
+                chamferRadius: 0
+            )
+            
             let physicsShape = SCNPhysicsShape.init(geometry: physicsGeometry, options: nil)
             
             addingPiece.pieceNode.physicsBody = SCNPhysicsBody.init(type: .dynamic, shape: physicsShape)
-            
             addingPiece.pieceNode.physicsBody?.angularDamping = 1
             addingPiece.pieceNode.physicsBody?.friction = 1
             addingPiece.pieceNode.physicsBody?.restitution = 0
             addingPiece.pieceNode.opacity = 1
+            
+            self.pieces[addingPiece.pieceNode] = addingPiece
+            
+            self.addingPiece = nil
         }
         
         floorOverlayNode.opacity = 0
