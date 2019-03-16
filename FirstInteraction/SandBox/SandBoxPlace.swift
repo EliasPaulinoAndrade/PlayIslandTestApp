@@ -18,29 +18,50 @@ class SandBoxPlace: SCNNode {
     private(set) var height: CGFloat
     private(set) var width: CGFloat
     private(set) var overlayDistance: Float
-    private(set) var minimumOfLines: Int
+    private(set) var minimumNumberOfLines: Int
     
     private var addingPiece: SCNNode?
     
+    lazy private(set) var heights: [[Float]] = {
+        var heights = [Array<Float>]()
+        for lineIndex in 0..<minimumNumberOfLines {
+            heights.append(Array<Float>())
+            for columnIndex in 0..<numberOfColumns {
+                heights[lineIndex].append(0)
+            }
+        }
+        return heights
+    }()
+    
     lazy private var floorOverlayNode: SCNNode = {
-        let floor = SCNCylinder.init(radius: gridSize/2, height: 0.001)
+        let gridSize = self.gridSize
+        let floor = SCNBox.init(width: gridSize, height: 0.001, length: gridSize, chamferRadius: 0)
         floor.firstMaterial?.diffuse.contents = UIColor.green
         
         let floorNode = SCNNode.init(geometry: floor)
-        floorNode.pivot = SCNMatrix4MakeTranslation(0, 0, -1)
         
         return floorNode
     }()
     
     var gridSize: CGFloat {
         if height > width {
-            return width/CGFloat(minimumOfLines)
+            return width/CGFloat(minimumNumberOfLines)
         }
-        return height/CGFloat(minimumOfLines)
+        return height/CGFloat(minimumNumberOfLines)
     }
     
+    lazy private(set) var numberOfColumns: Int = {
+        let gridSize = self.gridSize
+        
+        if height > width {
+            return Int(height/gridSize)
+        }
+        return Int(width/gridSize)
+    }()
+    
+    
     lazy var placePlaneNode: SCNNode = {
-        let placePlane = SCNBox.init(width: 10, height: 10, length: 1, chamferRadius: 0)
+        let placePlane = SCNBox.init(width: self.width, height: self.height, length: 1, chamferRadius: 0)
         placePlane.firstMaterial?.diffuse.contents = UIColor.red
         placePlane.firstMaterial?.isDoubleSided = true
         
@@ -61,7 +82,7 @@ class SandBoxPlace: SCNNode {
     }()
     
     lazy var overlayPlaneNode: SCNNode = {
-        let overlayPlane = SCNPlane.init(width: 10, height: 10)
+        let overlayPlane = SCNPlane.init(width: self.width, height: self.height)
         overlayPlane.firstMaterial?.diffuse.contents = UIColor.blue
         overlayPlane.firstMaterial?.isDoubleSided = true
         
@@ -69,7 +90,7 @@ class SandBoxPlace: SCNNode {
         overlayPlaneNode.position = SCNVector3.zero
         overlayPlaneNode.position.y += self.overlayDistance
         overlayPlaneNode.eulerAngles.x += Float.pi / 2.0
-        overlayPlaneNode.opacity = 0.001
+        overlayPlaneNode.opacity = 0.2
         
         return overlayPlaneNode
     }()
@@ -80,7 +101,7 @@ class SandBoxPlace: SCNNode {
         self.width = width
         self.overlayDistance = overlayDistance
         self.sceneView = sceneView
-        self.minimumOfLines = minimumOfLines
+        self.minimumNumberOfLines = minimumOfLines
         
         super.init()
         
@@ -108,17 +129,12 @@ class SandBoxPlace: SCNNode {
     }
     
     func pieceDragNeedBegan(withPiece piece: SCNNode) {
-        self.addingPiece = piece
         
-        let physicsGeometry = SCNBox.init(width: 1, height: 0.01, length: 1, chamferRadius: 0)
-        let physicsShape = SCNPhysicsShape.init(geometry: physicsGeometry, options: nil)
-        piece.physicsBody = SCNPhysicsBody.init(type: .dynamic, shape: physicsShape)
-        piece.physicsBody?.isAffectedByGravity = false
+        let pieceOwnerNode = SCNNode.init()
         
-        piece.physicsBody?.angularDamping = 1
-        piece.physicsBody?.friction = 1
-        piece.physicsBody?.restitution = 0
+        pieceOwnerNode.addChildNode(piece)
         
+        self.addingPiece = pieceOwnerNode
     }
     
     func handlePieceDrag(inPoint point: CGPoint) {
@@ -140,23 +156,19 @@ class SandBoxPlace: SCNNode {
         if arHitResult.node == overlayPlaneNode {
             overlayPoint.y -= self.overlayDistance - 0.002
         } else {
-            overlayPoint.y += 0.001
+            overlayPoint.y += 0.002
         }
         
-        floorOverlayNode.position = overlayPoint
+        floorOverlayNode.runAction(SCNAction.move(to: overlayPoint, duration: 0.05))
+        
         floorOverlayNode.opacity = 0.5
-        
-//        print(gridPosition(forPosition: CGPoint.init(x: CGFloat(piecePoint.x), y: CGFloat(piecePoint.z))))
-        
-        
-        
+    
         if floorOverlayNode.parent == nil {
             sceneView?.scene?.rootNode.addChildNode(floorOverlayNode)
         }
         
         if let addingNode = self.addingPiece {
-            addingNode.position = piecePoint
-            addingNode.position.z += 1
+            addingNode.runAction(SCNAction.move(to: piecePoint, duration: 0.05))
             
             if addingNode.parent == nil {
                 sceneView?.scene?.rootNode.addChildNode(addingNode)
@@ -165,7 +177,22 @@ class SandBoxPlace: SCNNode {
     }
     
     func pieceDragNeedEnd() {
-        addingPiece?.physicsBody?.isAffectedByGravity = true
+        if let addingPiece = self.addingPiece {
+            let gridSize = self.gridSize
+            
+            addingPiece.pivot = SCNMatrix4MakeTranslation(0, 1, 0)
+            addingPiece.position.y += 20
+            
+            let physicsGeometry = SCNBox.init(width: gridSize, height: 2, length: gridSize, chamferRadius: 0)
+            let physicsShape = SCNPhysicsShape.init(geometry: physicsGeometry, options: nil)
+            
+            addingPiece.physicsBody = SCNPhysicsBody.init(type: .dynamic, shape: physicsShape)
+            
+            addingPiece.physicsBody?.angularDamping = 1
+            addingPiece.physicsBody?.friction = 1
+            addingPiece.physicsBody?.restitution = 0
+        }
+        
         floorOverlayNode.opacity = 0
     }
 }
