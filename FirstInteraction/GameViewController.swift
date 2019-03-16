@@ -48,7 +48,7 @@ class GameViewController: UIViewController {
     }()
     
     lazy var sandBox: SandBoxPlace = {
-        let sandBox = SandBoxPlace.init(withHeight: 10, width: 10, andOverlayDistance: 5, sceneView: sceneView)
+        let sandBox = SandBoxPlace.init(withHeight: 10, width: 10, overlayDistance: 5, minimumOfLines: 20, andSceneView: sceneView)
         sandBox.position = SCNVector3.zero
         sandBox.position.y -= 2
         

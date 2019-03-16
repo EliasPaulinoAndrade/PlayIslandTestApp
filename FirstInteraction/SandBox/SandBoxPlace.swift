@@ -9,6 +9,8 @@
 import Foundation
 import SceneKit
 
+typealias GridPosition = (line: Int, column: Int)
+
 class SandBoxPlace: SCNNode {
     
     weak var sceneView: SCNView?
@@ -16,20 +18,26 @@ class SandBoxPlace: SCNNode {
     private(set) var height: CGFloat
     private(set) var width: CGFloat
     private(set) var overlayDistance: Float
+    private(set) var minimumOfLines: Int
     
     private var addingPiece: SCNNode?
     
-    private var floorOverlayNode: SCNNode = {
-        let floor = SCNCylinder.init(radius: 1, height: 0.001)
+    lazy private var floorOverlayNode: SCNNode = {
+        let floor = SCNCylinder.init(radius: gridSize/2, height: 0.001)
         floor.firstMaterial?.diffuse.contents = UIColor.green
         
         let floorNode = SCNNode.init(geometry: floor)
         floorNode.pivot = SCNMatrix4MakeTranslation(0, 0, -1)
         
-        
-        
         return floorNode
     }()
+    
+    var gridSize: CGFloat {
+        if height > width {
+            return width/CGFloat(minimumOfLines)
+        }
+        return height/CGFloat(minimumOfLines)
+    }
     
     lazy var placePlaneNode: SCNNode = {
         let placePlane = SCNBox.init(width: 10, height: 10, length: 1, chamferRadius: 0)
@@ -66,12 +74,13 @@ class SandBoxPlace: SCNNode {
         return overlayPlaneNode
     }()
     
-    init(withHeight height: CGFloat, width: CGFloat, andOverlayDistance overlayDistance: Float, sceneView: SCNView) {
+    init(withHeight height: CGFloat, width: CGFloat, overlayDistance: Float, minimumOfLines: Int, andSceneView sceneView: SCNView) {
         
         self.height = height
         self.width = width
         self.overlayDistance = overlayDistance
         self.sceneView = sceneView
+        self.minimumOfLines = minimumOfLines
         
         super.init()
         
@@ -81,6 +90,21 @@ class SandBoxPlace: SCNNode {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func gridPosition(forPosition position: CGPoint) -> GridPosition {
+        
+        let gridLine = Int(position.x/gridSize)
+        let gridColumn = Int(position.y/gridSize)
+        
+        return (line: gridLine, column: gridColumn)
+    }
+    
+    func positionFor(gridPosition: GridPosition) -> CGPoint {
+        let gridPositionX = gridSize * CGFloat(gridPosition.line)
+        let gridPositionY = gridSize * CGFloat(gridPosition.column)
+        
+        return CGPoint.init(x: gridPositionX, y: gridPositionY)
     }
     
     func pieceDragNeedBegan(withPiece piece: SCNNode) {
@@ -104,7 +128,13 @@ class SandBoxPlace: SCNNode {
             return
         }
 
-        let piecePoint = arHitResult.worldCoordinates
+        var piecePoint = arHitResult.worldCoordinates
+        
+        let pieceReal2DPoint = positionFor(gridPosition: gridPosition(forPosition: CGPoint.init(x: CGFloat(piecePoint.x), y: CGFloat(piecePoint.z))))
+        
+        piecePoint.x = Float(pieceReal2DPoint.x)
+        piecePoint.z = Float(pieceReal2DPoint.y)
+        
         var overlayPoint = piecePoint
         
         if arHitResult.node == overlayPlaneNode {
@@ -115,6 +145,10 @@ class SandBoxPlace: SCNNode {
         
         floorOverlayNode.position = overlayPoint
         floorOverlayNode.opacity = 0.5
+        
+//        print(gridPosition(forPosition: CGPoint.init(x: CGFloat(piecePoint.x), y: CGFloat(piecePoint.z))))
+        
+        
         
         if floorOverlayNode.parent == nil {
             sceneView?.scene?.rootNode.addChildNode(floorOverlayNode)
