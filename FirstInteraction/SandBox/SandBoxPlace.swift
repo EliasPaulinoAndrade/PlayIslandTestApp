@@ -63,7 +63,7 @@ class SandBoxPlace: SCNNode {
     
     lazy var placePlaneNode: SCNNode = {
         let placePlane = SCNBox.init(width: self.width, height: self.height, length: 1, chamferRadius: 0)
-        placePlane.firstMaterial?.diffuse.contents = UIColor.white
+        placePlane.firstMaterial?.diffuse.contents = UIImage(named: "mountainMaterial")
         placePlane.firstMaterial?.isDoubleSided = true
         
         let placePlaneNode = SCNNode.init(geometry: placePlane)
@@ -149,6 +149,12 @@ class SandBoxPlace: SCNNode {
         }
     }
     
+    func allPiecesOpacity(_ opacity: CGFloat) {
+        for piece in pieces.values {
+            piece.pieceNode.opacity = opacity
+        }
+    }
+    
     func gridPosition(forPosition position: CGPoint) -> GridPosition {
         
         let gridLine = Int(position.x/gridSize)
@@ -202,6 +208,8 @@ class SandBoxPlace: SCNNode {
                 overlayPoint.y += 0.002
             }
             
+            allPiecesOpacity(0.7)
+            
             overlayPoint.x += Float(CGFloat(addingNode.pieceGridSize.width - 1) * gridSize)
             overlayPoint.z += Float(CGFloat(addingNode.pieceGridSize.height - 1) * gridSize)
             
@@ -233,7 +241,7 @@ class SandBoxPlace: SCNNode {
     
     func pieceDragNeedEnd() {
         if let addingPiece = self.addingPiece {
-            
+            allPiecesOpacity(1)
             addingPiece.pieceNode.removeAllActions()
             addingPiece.pieceNode.position.y += 20
             

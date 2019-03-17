@@ -8,25 +8,46 @@
 
 import UIKit
 
-class PiecesPicker: UICollectionView {
+class PiecesPicker: UIView {
     
     weak var piecesDelegate: PiecePickerDelegate?
     
-    private(set) var piecesImages: [UIImage?]
+    private(set) var piecesImages: [Piece]
     
-    init(piecesImages: [UIImage?]) {
+    lazy private var pieceBackgroundView: UIView = {
+        let pieceBackgroundView = UIView.init()
+        
+        pieceBackgroundView.backgroundColor = UIColor.white
+        pieceBackgroundView.layer.opacity = 0.7
+        
+        return pieceBackgroundView
+    }()
+    
+    lazy private var piecesCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout.init()
-
+        
         layout.sectionInset = UIEdgeInsets.init(top: 10, left: 10, bottom: 10, right: 10)
         layout.scrollDirection = UICollectionView.ScrollDirection.horizontal
         
-        self.piecesImages = piecesImages
-        super.init(frame: CGRect.zero, collectionViewLayout: layout)
+        let piecesCollectionView = UICollectionView.init(frame: CGRect.zero, collectionViewLayout: layout)
+        piecesCollectionView.backgroundColor = UIColor.clear
+
+        return piecesCollectionView
+    }()
+    
+    init(piecesImages: [Piece]) {
         
-        backgroundColor = UIColor.red
-        delegate = self
-        dataSource = self
-        register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        self.piecesImages = piecesImages
+        super.init(frame: CGRect.zero)
+        addSubview(pieceBackgroundView)
+        addSubview(piecesCollectionView)
+        
+        backgroundColor = UIColor.clear
+        layer.borderWidth = 2
+        layer.borderColor = UIColor.init(named: "menuBorder")?.cgColor
+        piecesCollectionView.delegate = self
+        piecesCollectionView.dataSource = self
+        piecesCollectionView.register(PieceCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -45,6 +66,18 @@ class PiecesPicker: UICollectionView {
         bottomAnchor.constraint(equalTo: superView.bottomAnchor, constant: -10).isActive = true
         heightAnchor.constraint(equalToConstant: 100).isActive = true
         
+        piecesCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        piecesCollectionView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+        piecesCollectionView.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
+        piecesCollectionView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        piecesCollectionView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        
+        pieceBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+        pieceBackgroundView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+        pieceBackgroundView.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
+        pieceBackgroundView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        pieceBackgroundView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        
         self.layer.cornerRadius = 50
         self.layer.masksToBounds = true
     }
@@ -57,23 +90,11 @@ extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewData
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        let cellSize = sizeForCell(withCollectionSize: collectionView.frame.size)
         
-        cell.backgroundColor = UIColor.blue
-        cell.layer.cornerRadius = cellSize.height/2
-        cell.layer.masksToBounds = true
-        
-        let imageView = UIImageView.init(
-            frame: CGRect.init(
-                origin: CGPoint.zero,
-                size: CGSize.init(
-                    width: cellSize.width,
-                    height: cellSize.height
-                )
-            )
-        )
-        
-        imageView.image = piecesImages[indexPath.row]
+        if let pieceCell = cell as? PieceCollectionViewCell {
+            pieceCell.imageView.image = piecesImages[indexPath.row].image
+            pieceCell.tagLabel.text = String(piecesImages[indexPath.row].number)
+        }
         
         cell.addGestureRecognizer(
             UILongPressGestureRecognizer.init(
@@ -82,16 +103,14 @@ extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewData
                 )
             )
         )
-        
-        cell.addSubview(imageView)
-        
+                
         return cell
     }
     
     @objc func cellWasLongPressed(longPressRecognizer: UILongPressGestureRecognizer) {
         
         guard let cellView = longPressRecognizer.view as? UICollectionViewCell,
-              let cellPosition = indexPath(for: cellView) else {
+              let cellPosition = piecesCollectionView.indexPath(for: cellView) else {
             return
         }
         
@@ -111,13 +130,13 @@ extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewData
     }
     
     func hideOtherCells(forCellAtIndex mainCellIndex: IndexPath) {
-        for cell in visibleCells where indexPath(for: cell) != mainCellIndex {
+        for cell in piecesCollectionView.visibleCells where piecesCollectionView.indexPath(for: cell) != mainCellIndex {
             cell.layer.opacity = 0.7
         }
     }
     
     func showAllCells() {
-        for cell in visibleCells {
+        for cell in piecesCollectionView.visibleCells {
             UIView.animate(withDuration: 0.5) {
                 cell.layer.opacity = 1
             }

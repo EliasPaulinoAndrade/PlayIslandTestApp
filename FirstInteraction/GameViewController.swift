@@ -14,15 +14,18 @@ class GameViewController: UIViewController {
     
     lazy var piecesPicker: PiecesPicker = {
         
-        let piecesImages = [
-            UIImage.init(named: "walls"),
-            UIImage.init(named: "walls"),
-            UIImage.init(named: "walls"),
-            UIImage.init(named: "walls"),
-            UIImage.init(named: "walls"),
-            UIImage.init(named: "walls")
+        let pieces: [Piece] = [
+            Piece.init(image: UIImage.init(named: "walls"), number: 0),
+            Piece.init(image: UIImage.init(named: "walls"), number: 1),
+            Piece.init(image: UIImage.init(named: "walls"), number: 2),
+            Piece.init(image: UIImage.init(named: "walls"), number: 3),
+            Piece.init(image: UIImage.init(named: "walls"), number: 4),
+            Piece.init(image: UIImage.init(named: "walls"), number: 5),
+            Piece.init(image: UIImage.init(named: "walls"), number: 6),
+            Piece.init(image: UIImage.init(named: "walls"), number: 7)
         ]
-        let piecesPicker = PiecesPicker.init(piecesImages: piecesImages)
+        
+        let piecesPicker = PiecesPicker.init(piecesImages: pieces)
         piecesPicker.piecesDelegate = self
         piecesPicker.layer.masksToBounds = false
         
@@ -83,9 +86,16 @@ class GameViewController: UIViewController {
     
     lazy var earthNode: SCNNode = {
         
-        let earthNode = SCNScene.init(named: "art.scnassets/earthScene.scn")!.rootNode.childNodes.first!
+        let earthNode = SCNScene.init(named: "art.scnassets/earth")!.rootNode.childNode(withName: "Cone_003", recursively: false)!
+        
+        var imageMaterial = SCNMaterial.init()
+        imageMaterial.diffuse.contents = UIImage(named: "mountainMaterial")
+        imageMaterial.isDoubleSided = false
+        
+//        earthNode.geometry?.materials = [imageMaterial]
+        
         earthNode.scale = SCNVector3.init(7.5, 7.5, 7.5)
-        earthNode.pivot = SCNMatrix4MakeTranslation(0, 1, 0)
+        earthNode.pivot = SCNMatrix4MakeTranslation(0, -1, 0)
         earthNode.position.y -= 0.7
         
         return earthNode
@@ -121,6 +131,7 @@ class GameViewController: UIViewController {
         rotateButton.heightAnchor.constraint(equalToConstant: 80).isActive = true
         rotateButton.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(rotateButtonTapped(tapGestureRecognizer:))))
         
+        self.sceneView.backgroundColor = UIColor.init(named: "backgroundColor")
     }
     
     @objc func rotateButtonTapped(tapGestureRecognizer: UITapGestureRecognizer) {
@@ -142,7 +153,7 @@ class GameViewController: UIViewController {
         // show statistics such as fps and timing information
 //        sceneView.showsStatistics = true
         
-        sceneView.debugOptions = .showPhysicsShapes
+//        sceneView.debugOptions = .showPhysicsShapes
         
         // configure the view
         sceneView.backgroundColor = UIColor.black
@@ -172,7 +183,7 @@ extension GameViewController: PiecePickerDelegate {
     func piecePanDidBegan(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer, atPosition position: Int) {
         if let descriptor = defaultPiece(
             type: position,
-            image: piecesPicker.piecesImages[position]) {
+            image: piecesPicker.piecesImages[position].image) {
             sandBox.pieceDragNeedBegan(withPiece: descriptor)
         }
     }
@@ -190,7 +201,7 @@ extension GameViewController: PiecePickerDelegate {
     func defaultPiece(type: Int, image: UIImage?) -> PieceDescriptor? {
 
         let cube = SCNBox.init(width: 0.5, height: 1, length: 0.5, chamferRadius: 0)
-        cube.firstMaterial?.diffuse.contents = UIImage.init(named: "walls")
+        cube.firstMaterial?.diffuse.contents = UIImage.init(named: "wallsGreen")
         let cubeNode = SCNNode.init(geometry: cube)
         cubeNode.name = "cube"
         
@@ -209,8 +220,11 @@ extension GameViewController: PiecePickerDelegate {
         bezierCalcado.close()
         
         let calcado = SCNShape.init(path: bezierCalcado, extrusionDepth: 16)
-        calcado.firstMaterial?.diffuse.contents = UIImage.init(named: "walls")
+        calcado.firstMaterial?.diffuse.contents = UIImage.init(named: "wallsRed")
         let calcadoNode = SCNNode.init(geometry: calcado)
+        
+        let floor = SCNBox.init(width: 0.5, height: 0.001, length: 0.5, chamferRadius: 0)
+        let floorNode = SCNNode.init(geometry: floor)
         
         switch type {
         case 0:
@@ -242,7 +256,7 @@ extension GameViewController: PiecePickerDelegate {
             bezier.addLine(to: CGPoint.init(x: -0.25, y: -0.25))
             
             let telhado = SCNShape.init(path: bezier, extrusionDepth: 0.5)
-            telhado.firstMaterial?.diffuse.contents = UIImage.init(named: "walls")
+            telhado.firstMaterial?.diffuse.contents = UIImage.init(named: "wallsBlue")
             let telhadoNode = SCNNode.init(geometry: telhado)
             
             return PieceDescriptor.init(
@@ -263,6 +277,27 @@ extension GameViewController: PiecePickerDelegate {
                 pieceNode: calcadoNode,
                 pieceGridSize: (width: 2, height: 2),
                 pieceRealSize: (width: 18, height: 18, depth: 16),
+                placeHolderImage: image
+            )
+        case 6:
+            
+            floor.firstMaterial?.diffuse.contents = UIImage.init(named: "floor")
+            
+            return PieceDescriptor.init(
+                pieceNode: floorNode,
+                pieceGridSize: (width: 1, height: 1),
+                pieceRealSize: (width: 0.5, height: 0.001, depth: 0.5),
+                placeHolderImage: image
+            )
+            
+        case 7:
+            
+            floor.firstMaterial?.diffuse.contents = UIImage.init(named: "floor2")
+            
+            return PieceDescriptor.init(
+                pieceNode: floorNode,
+                pieceGridSize: (width: 1, height: 1),
+                pieceRealSize: (width: 0.5, height: 0.001, depth: 0.5),
                 placeHolderImage: image
             )
         default:

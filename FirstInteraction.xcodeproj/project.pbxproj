@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E3DBF4CE223DED9000E2F274 /* PieceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DBF4CD223DED9000E2F274 /* PieceCollectionViewCell.swift */; };
+		E3DBF4D0223DF4F200E2F274 /* Piece.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DBF4CF223DF4F200E2F274 /* Piece.swift */; };
 		E3EC7309223C1B6200AEB8DD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EC7308223C1B6200AEB8DD /* AppDelegate.swift */; };
 		E3EC730B223C1B6200AEB8DD /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = E3EC730A223C1B6200AEB8DD /* art.scnassets */; };
 		E3EC730D223C1B6200AEB8DD /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EC730C223C1B6200AEB8DD /* GameViewController.swift */; };
@@ -20,6 +22,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E3DBF4CD223DED9000E2F274 /* PieceCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceCollectionViewCell.swift; sourceTree = "<group>"; };
+		E3DBF4CF223DF4F200E2F274 /* Piece.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Piece.swift; sourceTree = "<group>"; };
 		E3EC7305223C1B6200AEB8DD /* FirstInteraction.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FirstInteraction.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3EC7308223C1B6200AEB8DD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E3EC730A223C1B6200AEB8DD /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -99,6 +103,8 @@
 			children = (
 				E3EC7324223C321900AEB8DD /* PiecesPicker.swift */,
 				E3EC7327223C588A00AEB8DD /* PiecePickerDelegate.swift */,
+				E3DBF4CD223DED9000E2F274 /* PieceCollectionViewCell.swift */,
+				E3DBF4CF223DF4F200E2F274 /* Piece.swift */,
 			);
 			path = PiecesPicker;
 			sourceTree = "<group>";
@@ -179,6 +185,8 @@
 				E3EC7321223C261E00AEB8DD /* SandBoxPlace.swift in Sources */,
 				E3EC7325223C321900AEB8DD /* PiecesPicker.swift in Sources */,
 				E3EC732B223D0F7D00AEB8DD /* PieceDescriptor.swift in Sources */,
+				E3DBF4D0223DF4F200E2F274 /* Piece.swift in Sources */,
+				E3DBF4CE223DED9000E2F274 /* PieceCollectionViewCell.swift in Sources */,
 				E3EC730D223C1B6200AEB8DD /* GameViewController.swift in Sources */,
 				E3EC7309223C1B6200AEB8DD /* AppDelegate.swift in Sources */,
 			);
