@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E354DEF6223E8144004E34D2 /* PieceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E354DEF5223E8144004E34D2 /* PieceType.swift */; };
+		E354DEF8223E823D004E34D2 /* PiecesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E354DEF7223E823D004E34D2 /* PiecesFactory.swift */; };
+		E354DEFA223E87CC004E34D2 /* Array+pieces.swift in Sources */ = {isa = PBXBuildFile; fileRef = E354DEF9223E87CC004E34D2 /* Array+pieces.swift */; };
+		E354DEFC223E887A004E34D2 /* PieceSolt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E354DEFB223E887A004E34D2 /* PieceSolt.swift */; };
 		E3DBF4CE223DED9000E2F274 /* PieceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DBF4CD223DED9000E2F274 /* PieceCollectionViewCell.swift */; };
 		E3DBF4D0223DF4F200E2F274 /* Piece.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DBF4CF223DF4F200E2F274 /* Piece.swift */; };
 		E3EC7309223C1B6200AEB8DD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EC7308223C1B6200AEB8DD /* AppDelegate.swift */; };
@@ -22,6 +26,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E354DEF5223E8144004E34D2 /* PieceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceType.swift; sourceTree = "<group>"; };
+		E354DEF7223E823D004E34D2 /* PiecesFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiecesFactory.swift; sourceTree = "<group>"; };
+		E354DEF9223E87CC004E34D2 /* Array+pieces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+pieces.swift"; sourceTree = "<group>"; };
+		E354DEFB223E887A004E34D2 /* PieceSolt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceSolt.swift; sourceTree = "<group>"; };
 		E3DBF4CD223DED9000E2F274 /* PieceCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceCollectionViewCell.swift; sourceTree = "<group>"; };
 		E3DBF4CF223DF4F200E2F274 /* Piece.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Piece.swift; sourceTree = "<group>"; };
 		E3EC7305223C1B6200AEB8DD /* FirstInteraction.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FirstInteraction.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -49,6 +57,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E354DEF4223E810D004E34D2 /* PiecesFactory */ = {
+			isa = PBXGroup;
+			children = (
+				E354DEF5223E8144004E34D2 /* PieceType.swift */,
+				E354DEF7223E823D004E34D2 /* PiecesFactory.swift */,
+			);
+			path = PiecesFactory;
+			sourceTree = "<group>";
+		};
 		E3EC72FC223C1B6200AEB8DD = {
 			isa = PBXGroup;
 			children = (
@@ -68,6 +85,7 @@
 		E3EC7307223C1B6200AEB8DD /* FirstInteraction */ = {
 			isa = PBXGroup;
 			children = (
+				E354DEF4223E810D004E34D2 /* PiecesFactory */,
 				E3EC7323223C31DC00AEB8DD /* PiecesPicker */,
 				E3EC731F223C260D00AEB8DD /* SandBox */,
 				E3EC731C223C1F5A00AEB8DD /* extensions */,
@@ -77,6 +95,7 @@
 				E3EC7311223C1B6400AEB8DD /* Assets.xcassets */,
 				E3EC7313223C1B6400AEB8DD /* LaunchScreen.storyboard */,
 				E3EC7316223C1B6400AEB8DD /* Info.plist */,
+				E354DEFB223E887A004E34D2 /* PieceSolt.swift */,
 			);
 			path = FirstInteraction;
 			sourceTree = "<group>";
@@ -85,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				E3EC731D223C1F7A00AEB8DD /* SCNVector3+zero.swift */,
+				E354DEF9223E87CC004E34D2 /* Array+pieces.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -180,12 +200,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E354DEFC223E887A004E34D2 /* PieceSolt.swift in Sources */,
 				E3EC731E223C1F7A00AEB8DD /* SCNVector3+zero.swift in Sources */,
 				E3EC7328223C588A00AEB8DD /* PiecePickerDelegate.swift in Sources */,
+				E354DEF6223E8144004E34D2 /* PieceType.swift in Sources */,
 				E3EC7321223C261E00AEB8DD /* SandBoxPlace.swift in Sources */,
 				E3EC7325223C321900AEB8DD /* PiecesPicker.swift in Sources */,
+				E354DEF8223E823D004E34D2 /* PiecesFactory.swift in Sources */,
 				E3EC732B223D0F7D00AEB8DD /* PieceDescriptor.swift in Sources */,
 				E3DBF4D0223DF4F200E2F274 /* Piece.swift in Sources */,
+				E354DEFA223E87CC004E34D2 /* Array+pieces.swift in Sources */,
 				E3DBF4CE223DED9000E2F274 /* PieceCollectionViewCell.swift in Sources */,
 				E3EC730D223C1B6200AEB8DD /* GameViewController.swift in Sources */,
 				E3EC7309223C1B6200AEB8DD /* AppDelegate.swift in Sources */,

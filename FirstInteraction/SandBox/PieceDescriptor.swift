@@ -17,8 +17,6 @@ struct PieceDescriptor {
     var pieceGridSize: PieceGridSize
     var pieceRealSize: PieceSize
     
-    var placeHolderImage: UIImage?
-    
     var heightRate: CGFloat {
         return pieceRealSize.height/pieceRealSize.width
     }

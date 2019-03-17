@@ -228,10 +228,7 @@ class SandBoxPlace: SCNNode {
             }
             
             allPiecesOpacity(0.7)
-            
-            overlayPoint.x += Float(CGFloat(addingNode.pieceGridSize.width - 1) * gridSize)
-            overlayPoint.z += Float(CGFloat(addingNode.pieceGridSize.height - 1) * gridSize)
-            
+        
             floorOverlayNode.runAction(SCNAction.move(to: overlayPoint, duration: 0.05))
             
             floorOverlayNode.opacity = 0.5
@@ -244,11 +241,8 @@ class SandBoxPlace: SCNNode {
             piecePoint.z -= Float(addingObjectRealSize.depth/2)
             piecePoint.y += Float(addingObjectRealSize.height/2)
             
-            let floorRealSizeX = gridSize * CGFloat(addingObjectGridSize.width)
-            let floorRealSizeY = gridSize * CGFloat(addingObjectGridSize.height)
-            
             floorOverlayNode.scale = SCNVector3.init(addingObjectGridSize.width, 1, addingObjectGridSize.height)
-            floorOverlayNode.pivot = SCNMatrix4MakeTranslation(Float(floorRealSizeX/2), 0, Float(floorRealSizeY/2))
+            floorOverlayNode.pivot = SCNMatrix4MakeTranslation(0.5, 0, 0.5)
             
             addingNode.pieceNode.runAction(SCNAction.move(to: piecePoint, duration: 0.05))
             

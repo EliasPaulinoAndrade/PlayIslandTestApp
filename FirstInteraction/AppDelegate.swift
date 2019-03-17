@@ -12,13 +12,25 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
+    static let slots: [PieceSlot] = [
+        PieceSlot.init(pieceType: .clockTower, quantity: 2, color: .green),
+        PieceSlot.init(pieceType: .block1x1, quantity: 2, color: .green),
+        PieceSlot.init(pieceType: .block2x1, quantity: 5, color: .blue),
+        PieceSlot.init(pieceType: .block3x1, quantity: 3, color: .red),
+        PieceSlot.init(pieceType: .block2x2, quantity: 1, color: .pink),
+        PieceSlot.init(pieceType: .arch2x2, quantity: 3, color: .green),
+        PieceSlot.init(pieceType: .arch1x1, quantity: 3, color: .green),
+        PieceSlot.init(pieceType: .ceil, quantity: 1, color: .green),
+        PieceSlot.init(pieceType: .floorSideWalk, quantity: 3, color: .green),
+        PieceSlot.init(pieceType: .floorAsphalt, quantity: 3, color: .green)
+    ]
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         window = UIWindow.init(frame: UIScreen.main.bounds)
         
-        let firstController = GameViewController.init()
+        let firstController = GameViewController.init(withPieces: AppDelegate.slots)
         
         window?.rootViewController = firstController
         window?.makeKeyAndVisible()

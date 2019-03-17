@@ -12,7 +12,7 @@ class PiecesPicker: UIView {
     
     weak var piecesDelegate: PiecePickerDelegate?
     
-    private(set) var piecesImages: [Piece]
+    var piecesImages: [Piece]
     
     lazy private var pieceBackgroundView: UIView = {
         let pieceBackgroundView = UIView.init()
@@ -86,6 +86,10 @@ class PiecesPicker: UIView {
         self.layer.cornerRadius = 50
         self.layer.masksToBounds = true
     }
+    
+    func reloadData() {
+        self.piecesCollectionView.reloadData()
+    }
 }
 
 extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
@@ -97,8 +101,15 @@ extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewData
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
         
         if let pieceCell = cell as? PieceCollectionViewCell {
-            pieceCell.imageView.image = piecesImages[indexPath.row].image
-            pieceCell.tagLabel.text = String(piecesImages[indexPath.row].number)
+            let piece = piecesImages[indexPath.row]
+            pieceCell.imageView.image = piece.image
+            pieceCell.tagLabel.text = String(piece.number)
+            
+            if piece.enabled {
+                pieceCell.layer.opacity = 1
+            } else {
+                pieceCell.layer.opacity = 0.5
+            }
         }
         
         let cellLongPressGestureRecognizer = UILongPressGestureRecognizer.init(
@@ -119,7 +130,8 @@ extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewData
     @objc func cellWasLongPressed(longPressRecognizer: UILongPressGestureRecognizer) {
         
         guard let cellView = longPressRecognizer.view as? UICollectionViewCell,
-              let cellPosition = piecesCollectionView.indexPath(for: cellView) else {
+              let cellPosition = piecesCollectionView.indexPath(for: cellView),
+              self.piecesImages[cellPosition.row].enabled == true else {
             return
         }
         
@@ -129,23 +141,28 @@ extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewData
             piecesDelegate?.piecePanDidBegan(withGestureRecognizer: longPressRecognizer, atPosition: cellPosition.row)
         case .ended:
             showAllCells()
+            reloadData()
             piecesDelegate?.piecePanDidEnded(withGestureRecognizer: longPressRecognizer, atPosition: cellPosition.row)
         case .changed:
-            
             piecesDelegate?.piecePanDidChange(withGestureRecognizer: longPressRecognizer, atPosition: cellPosition.row)
         default:
             break
         }
     }
     
+    func disableCellAt(position: Int) {
+        self.piecesImages[position].enabled = false
+    }
+    
     func hideOtherCells(forCellAtIndex mainCellIndex: IndexPath) {
         for cell in piecesCollectionView.visibleCells where piecesCollectionView.indexPath(for: cell) != mainCellIndex {
-            cell.layer.opacity = 0.7
+            cell.layer.opacity = 0.5
         }
     }
     
     func showAllCells() {
         for cell in piecesCollectionView.visibleCells {
+            
             UIView.animate(withDuration: 0.5) {
                 cell.layer.opacity = 1
             }
