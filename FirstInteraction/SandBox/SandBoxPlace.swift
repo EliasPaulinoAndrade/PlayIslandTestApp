@@ -66,25 +66,29 @@ class SandBoxPlace: SCNNode {
         placePlane.firstMaterial?.diffuse.contents = UIImage(named: "mountainMaterial")
         placePlane.firstMaterial?.isDoubleSided = true
         
-        let placePlaneNode = SCNNode.init(geometry: placePlane)
+        var placePlaneNode = SCNNode.init(geometry: placePlane)
         placePlaneNode.position = SCNVector3.zero
+        placePlaneNode.position.y -= 1
         placePlaneNode.eulerAngles.x += Float.pi / 2.0
         
-        placePlaneNode.pivot = SCNMatrix4MakeTranslation(0, 0, -0.5)
-        
-        placePlaneNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
-        placePlaneNode.physicsBody?.isAffectedByGravity = false
-        
-        placePlaneNode.physicsBody?.angularDamping = 1
-        placePlaneNode.physicsBody?.friction = 1
-        placePlaneNode.physicsBody?.restitution = 0
-        placePlaneNode.categoryBitMask = 2
+        placePlaneNode.runAction(SCNAction.sequence([
+            SCNAction.move(to: SCNVector3.init(0, -0.5, 0), duration: 0.5),
+            SCNAction.run({ (_) in
+                placePlaneNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+                placePlaneNode.physicsBody?.isAffectedByGravity = false
+
+                placePlaneNode.physicsBody?.angularDamping = 1
+                placePlaneNode.physicsBody?.friction = 1
+                placePlaneNode.physicsBody?.restitution = 0
+                placePlaneNode.categoryBitMask = 2
+            }
+        )]))
         
         return placePlaneNode
     }()
     
     lazy var overlayPlaneNode: SCNNode = {
-        let overlayPlane = SCNPlane.init(width: self.width, height: self.height)
+        let overlayPlane = SCNPlane.init(width: self.width*2, height: self.height*2)
         overlayPlane.firstMaterial?.diffuse.contents = UIColor.blue
         overlayPlane.firstMaterial?.isDoubleSided = true
         
@@ -92,9 +96,22 @@ class SandBoxPlace: SCNNode {
         overlayPlaneNode.position = SCNVector3.zero
         overlayPlaneNode.position.y += self.overlayDistance
         overlayPlaneNode.eulerAngles.x += Float.pi / 2.0
-        overlayPlaneNode.opacity = 0.01
+        overlayPlaneNode.opacity = 0.001
         
         return overlayPlaneNode
+    }()
+    
+    lazy var floorOverlayPlaneNode: SCNNode = {
+        let floorOverlayPlane = SCNPlane.init(width: self.width*2, height: self.height*2)
+        floorOverlayPlane.firstMaterial?.diffuse.contents = UIColor.red
+        floorOverlayPlane.firstMaterial?.isDoubleSided = true
+        
+        let floorOverlayPlaneNode = SCNNode.init(geometry: floorOverlayPlane)
+        floorOverlayPlaneNode.position = SCNVector3.zero
+        floorOverlayPlaneNode.eulerAngles.x += Float.pi / 2.0
+        floorOverlayPlaneNode.opacity = 0.001
+        
+        return floorOverlayPlaneNode
     }()
     
     init(withHeight height: CGFloat, width: CGFloat, overlayDistance: Float, minimumOfLines: Int, andSceneView sceneView: SCNView) {
@@ -109,6 +126,7 @@ class SandBoxPlace: SCNNode {
         
         addChildNode(placePlaneNode)
         addChildNode(overlayPlaneNode)
+        addChildNode(floorOverlayPlaneNode)
         
         sceneView.addGestureRecognizer(UILongPressGestureRecognizer.init(target: self, action: #selector(sceneWasLongPressed(longPressGestureRecognizer:))))
         sceneView.scene?.physicsWorld.gravity.y = -20
@@ -182,8 +200,9 @@ class SandBoxPlace: SCNNode {
     }
     
     func handlePieceDrag(inPoint point: CGPoint) {
+        
         guard let arHitResult = sceneView?.hitTest(point, options: [SCNHitTestOption.boundingBoxOnly : true]).first,
-              arHitResult.node == overlayPlaneNode || arHitResult.node == placePlaneNode else {
+              arHitResult.node == overlayPlaneNode || arHitResult.node == placePlaneNode || arHitResult.node == floorOverlayPlaneNode else {
                 
             return
         }

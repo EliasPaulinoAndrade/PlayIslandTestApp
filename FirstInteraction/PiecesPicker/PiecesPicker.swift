@@ -61,10 +61,15 @@ class PiecesPicker: UIView {
         }
         
         translatesAutoresizingMaskIntoConstraints = false
-        leftAnchor.constraint(equalTo: superView.leftAnchor, constant: 10).isActive = true
-        rightAnchor.constraint(equalTo: superView.rightAnchor, constant: -10).isActive = true
         bottomAnchor.constraint(equalTo: superView.bottomAnchor, constant: -10).isActive = true
         heightAnchor.constraint(equalToConstant: 100).isActive = true
+        centerXAnchor.constraint(equalTo: superView.centerXAnchor).isActive = true
+        let selfLeftAnchor = leftAnchor.constraint(equalTo: superView.leftAnchor, constant: 10)
+        selfLeftAnchor.priority = .defaultHigh
+        selfLeftAnchor.isActive = true
+        let selfWidth = widthAnchor.constraint(lessThanOrEqualToConstant: 400)
+        selfWidth.priority = .required
+        selfWidth.isActive = true
         
         piecesCollectionView.translatesAutoresizingMaskIntoConstraints = false
         piecesCollectionView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
@@ -96,12 +101,16 @@ extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewData
             pieceCell.tagLabel.text = String(piecesImages[indexPath.row].number)
         }
         
-        cell.addGestureRecognizer(
-            UILongPressGestureRecognizer.init(
+        let cellLongPressGestureRecognizer = UILongPressGestureRecognizer.init(
                 target: self,
                 action: #selector(cellWasLongPressed(longPressRecognizer:)
-                )
             )
+        )
+        
+        cellLongPressGestureRecognizer.minimumPressDuration = 0.2
+        
+        cell.addGestureRecognizer(
+            cellLongPressGestureRecognizer
         )
                 
         return cell

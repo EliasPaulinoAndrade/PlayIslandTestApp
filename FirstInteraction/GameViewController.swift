@@ -15,14 +15,15 @@ class GameViewController: UIViewController {
     lazy var piecesPicker: PiecesPicker = {
         
         let pieces: [Piece] = [
-            Piece.init(image: UIImage.init(named: "walls"), number: 0),
-            Piece.init(image: UIImage.init(named: "walls"), number: 1),
-            Piece.init(image: UIImage.init(named: "walls"), number: 2),
-            Piece.init(image: UIImage.init(named: "walls"), number: 3),
+            Piece.init(image: UIImage.init(named: "block1x1"), number: 0),
+            Piece.init(image: UIImage.init(named: "block2x1"), number: 1),
+            Piece.init(image: UIImage.init(named: "block2x2"), number: 2),
+            Piece.init(image: UIImage.init(named: "ceil"), number: 3),
             Piece.init(image: UIImage.init(named: "walls"), number: 4),
             Piece.init(image: UIImage.init(named: "walls"), number: 5),
-            Piece.init(image: UIImage.init(named: "walls"), number: 6),
-            Piece.init(image: UIImage.init(named: "walls"), number: 7)
+            Piece.init(image: UIImage.init(named: "floor1d"), number: 6),
+            Piece.init(image: UIImage.init(named: "floor2d"), number: 7),
+            Piece.init(image: UIImage.init(named: "floor2d"), number: 8)
         ]
         
         let piecesPicker = PiecesPicker.init(piecesImages: pieces)
@@ -68,20 +69,10 @@ class GameViewController: UIViewController {
     }()
     
     lazy var sandBox: SandBoxPlace = {
-        let sandBox = SandBoxPlace.init(withHeight: 10, width: 10, overlayDistance: 7, minimumOfLines: 10, andSceneView: sceneView)
+        let sandBox = SandBoxPlace.init(withHeight: 10, width: 10, overlayDistance: 8.5, minimumOfLines: 10, andSceneView: sceneView)
         sandBox.position = SCNVector3.zero
         
         return sandBox
-    }()
-    
-    lazy var rotateButton: UIView = {
-        let view = UIView.init()
-        
-        view.backgroundColor = UIColor.red
-        view.layer.cornerRadius = 40
-        view.layer.masksToBounds = true
-        
-        return view
     }()
     
     lazy var earthNode: SCNNode = {
@@ -99,6 +90,20 @@ class GameViewController: UIViewController {
         earthNode.position.y -= 0.7
         
         return earthNode
+    }()
+    
+    lazy var linearGradientLayer: CAGradientLayer = {
+        let linearGradientLayer = CAGradientLayer()
+        
+        guard let colorTop = UIColor.init(named: "backgroundColor")?.cgColor,
+              let colorBottom = UIColor.init(named: "backgroundColorLight")?.cgColor else {
+            return linearGradientLayer
+        }
+    
+        linearGradientLayer.colors = [colorBottom, colorTop, colorTop]
+        linearGradientLayer.locations = [ 0.0, 0.1, 1.0]
+        
+        return linearGradientLayer
     }()
     
     lazy var sceneView: SCNView = {
@@ -123,19 +128,13 @@ class GameViewController: UIViewController {
         
         setupSceneView()
         self.view.addSubview(piecesPicker)
-        self.view.addSubview(rotateButton)
-        rotateButton.translatesAutoresizingMaskIntoConstraints = false
-        rotateButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
-        rotateButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
-        rotateButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
-        rotateButton.heightAnchor.constraint(equalToConstant: 80).isActive = true
-        rotateButton.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(rotateButtonTapped(tapGestureRecognizer:))))
-        
-        self.sceneView.backgroundColor = UIColor.init(named: "backgroundColor")
+       
+        self.sceneView.backgroundColor = UIColor.clear
+        self.view.layer.insertSublayer(linearGradientLayer, at: 0)
     }
     
-    @objc func rotateButtonTapped(tapGestureRecognizer: UITapGestureRecognizer) {
-      
+    override func viewDidLayoutSubviews() {
+        linearGradientLayer.frame = self.view.bounds
     }
     
     func setupSceneView() {
@@ -203,7 +202,6 @@ extension GameViewController: PiecePickerDelegate {
         let cube = SCNBox.init(width: 0.5, height: 1, length: 0.5, chamferRadius: 0)
         cube.firstMaterial?.diffuse.contents = UIImage.init(named: "wallsGreen")
         let cubeNode = SCNNode.init(geometry: cube)
-        cubeNode.name = "cube"
         
         let bezierCalcado = UIBezierPath.init()
         
@@ -235,17 +233,24 @@ extension GameViewController: PiecePickerDelegate {
                 placeHolderImage: image
             )
         case 1:
+            let cube2x1 = SCNBox.init(width: 1, height: 1, length: 0.5, chamferRadius: 0)
+            cube2x1.firstMaterial?.diffuse.contents = UIImage.init(named: "wallsGreen")
+            let cubeNode2x1 = SCNNode.init(geometry: cube2x1)
+            
             return PieceDescriptor.init(
-                pieceNode: cubeNode,
+                pieceNode: cubeNode2x1,
                 pieceGridSize: (width: 2, height: 1),
-                pieceRealSize: (width: 0.5, height: 1, depth: 0.5),
+                pieceRealSize: (width: 1, height: 1, depth: 0.5),
                 placeHolderImage: image
             )
         case 2:
+            let cube2x2 = SCNBox.init(width: 1, height: 1, length: 1, chamferRadius: 0)
+            cube2x2.firstMaterial?.diffuse.contents = UIImage.init(named: "wallsGreen")
+            let cubeNode2x2 = SCNNode.init(geometry: cube2x2)
             return PieceDescriptor.init(
-                pieceNode: cubeNode,
+                pieceNode: cubeNode2x2,
                 pieceGridSize: (width: 2, height: 2),
-                pieceRealSize: (width: 0.5, height: 1, depth: 0.5),
+                pieceRealSize: (width: 1, height: 1, depth: 1),
                 placeHolderImage: image
             )
         case 3:
@@ -298,6 +303,17 @@ extension GameViewController: PiecePickerDelegate {
                 pieceNode: floorNode,
                 pieceGridSize: (width: 1, height: 1),
                 pieceRealSize: (width: 0.5, height: 0.001, depth: 0.5),
+                placeHolderImage: image
+            )
+        case 8:
+            let cube3x1 = SCNBox.init(width: 1.5, height: 1, length: 0.5, chamferRadius: 0)
+            cube3x1.firstMaterial?.diffuse.contents = UIImage.init(named: "wallsGreen")
+            let cubeNode3x1 = SCNNode.init(geometry: cube3x1)
+            
+            return PieceDescriptor.init(
+                pieceNode: cubeNode3x1,
+                pieceGridSize: (width: 3, height: 1),
+                pieceRealSize: (width: 1.5, height: 1, depth: 0.5),
                 placeHolderImage: image
             )
         default:
