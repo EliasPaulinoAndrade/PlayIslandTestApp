@@ -91,22 +91,36 @@ extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewData
     @objc func cellWasLongPressed(longPressRecognizer: UILongPressGestureRecognizer) {
         
         guard let cellView = longPressRecognizer.view as? UICollectionViewCell,
-              let cellPosition = indexPath(for: cellView)?.row else {
+              let cellPosition = indexPath(for: cellView) else {
             return
         }
         
         switch longPressRecognizer.state {
         case .began:
-            
-            piecesDelegate?.piecePanDidBegan(withGestureRecognizer: longPressRecognizer, atPosition: cellPosition)
+            hideOtherCells(forCellAtIndex: cellPosition)
+            piecesDelegate?.piecePanDidBegan(withGestureRecognizer: longPressRecognizer, atPosition: cellPosition.row)
         case .ended:
-            
-            piecesDelegate?.piecePanDidEnded(withGestureRecognizer: longPressRecognizer, atPosition: cellPosition)
+            showAllCells()
+            piecesDelegate?.piecePanDidEnded(withGestureRecognizer: longPressRecognizer, atPosition: cellPosition.row)
         case .changed:
             
-            piecesDelegate?.piecePanDidChange(withGestureRecognizer: longPressRecognizer, atPosition: cellPosition)
+            piecesDelegate?.piecePanDidChange(withGestureRecognizer: longPressRecognizer, atPosition: cellPosition.row)
         default:
             break
+        }
+    }
+    
+    func hideOtherCells(forCellAtIndex mainCellIndex: IndexPath) {
+        for cell in visibleCells where indexPath(for: cell) != mainCellIndex {
+            cell.layer.opacity = 0.7
+        }
+    }
+    
+    func showAllCells() {
+        for cell in visibleCells {
+            UIView.animate(withDuration: 0.5) {
+                cell.layer.opacity = 1
+            }
         }
     }
 

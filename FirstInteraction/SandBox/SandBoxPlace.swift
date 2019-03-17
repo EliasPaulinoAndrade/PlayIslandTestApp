@@ -38,7 +38,7 @@ class SandBoxPlace: SCNNode {
     lazy private var floorOverlayNode: SCNNode = {
         let gridSize = self.gridSize
         let floor = SCNBox.init(width: gridSize, height: 0.001, length: gridSize, chamferRadius: 0)
-        floor.firstMaterial?.diffuse.contents = UIColor.green
+        floor.firstMaterial?.diffuse.contents = UIColor.red
         
         let floorNode = SCNNode.init(geometry: floor)
         
@@ -63,7 +63,7 @@ class SandBoxPlace: SCNNode {
     
     lazy var placePlaneNode: SCNNode = {
         let placePlane = SCNBox.init(width: self.width, height: self.height, length: 1, chamferRadius: 0)
-        placePlane.firstMaterial?.diffuse.contents = UIColor.red
+        placePlane.firstMaterial?.diffuse.contents = UIColor.white
         placePlane.firstMaterial?.isDoubleSided = true
         
         let placePlaneNode = SCNNode.init(geometry: placePlane)
@@ -111,6 +111,8 @@ class SandBoxPlace: SCNNode {
         addChildNode(overlayPlaneNode)
         
         sceneView.addGestureRecognizer(UILongPressGestureRecognizer.init(target: self, action: #selector(sceneWasLongPressed(longPressGestureRecognizer:))))
+        sceneView.scene?.physicsWorld.gravity.y = -20
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -231,6 +233,9 @@ class SandBoxPlace: SCNNode {
     
     func pieceDragNeedEnd() {
         if let addingPiece = self.addingPiece {
+            
+            addingPiece.pieceNode.removeAllActions()
+            addingPiece.pieceNode.position.y += 20
             
             let gridSize = self.gridSize
             let addingPieceSize = addingPiece.scaledSize(gridSize: gridSize)
