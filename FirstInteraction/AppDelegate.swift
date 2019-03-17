@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         PieceSlot.init(pieceType: .block2x1, quantity: 5, color: .blue),
         PieceSlot.init(pieceType: .block3x1, quantity: 3, color: .red),
         PieceSlot.init(pieceType: .block2x2, quantity: 1, color: .pink),
+        PieceSlot.init(pieceType: .block2x2, quantity: 1, color: .red),
         PieceSlot.init(pieceType: .arch2x2, quantity: 3, color: .green),
         PieceSlot.init(pieceType: .arch1x1, quantity: 3, color: .green),
         PieceSlot.init(pieceType: .ceil, quantity: 1, color: .green),

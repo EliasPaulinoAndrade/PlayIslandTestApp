@@ -13,6 +13,12 @@
 		E354DEFC223E887A004E34D2 /* PieceSolt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E354DEFB223E887A004E34D2 /* PieceSolt.swift */; };
 		E3DBF4CE223DED9000E2F274 /* PieceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DBF4CD223DED9000E2F274 /* PieceCollectionViewCell.swift */; };
 		E3DBF4D0223DF4F200E2F274 /* Piece.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DBF4CF223DF4F200E2F274 /* Piece.swift */; };
+		E3DD9BF2223EA9FA00D87490 /* SoundsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DD9BF1223EA9FA00D87490 /* SoundsService.swift */; };
+		E3DD9BF4223EAA2400D87490 /* SoundName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DD9BF3223EAA2400D87490 /* SoundName.swift */; };
+		E3DD9BF6223EAE0B00D87490 /* didFall.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E3DD9BF5223EAE0B00D87490 /* didFall.mp3 */; };
+		E3DD9BF9223EB0B600D87490 /* masks.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DD9BF8223EB0B600D87490 /* masks.swift */; };
+		E3DD9BFB223EB28000D87490 /* falling.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E3DD9BFA223EB28000D87490 /* falling.mp3 */; };
+		E3DD9BFD223EB58F00D87490 /* didBeginDrag.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E3DD9BFC223EB58F00D87490 /* didBeginDrag.mp3 */; };
 		E3EC7309223C1B6200AEB8DD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EC7308223C1B6200AEB8DD /* AppDelegate.swift */; };
 		E3EC730B223C1B6200AEB8DD /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = E3EC730A223C1B6200AEB8DD /* art.scnassets */; };
 		E3EC730D223C1B6200AEB8DD /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EC730C223C1B6200AEB8DD /* GameViewController.swift */; };
@@ -32,6 +38,12 @@
 		E354DEFB223E887A004E34D2 /* PieceSolt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceSolt.swift; sourceTree = "<group>"; };
 		E3DBF4CD223DED9000E2F274 /* PieceCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceCollectionViewCell.swift; sourceTree = "<group>"; };
 		E3DBF4CF223DF4F200E2F274 /* Piece.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Piece.swift; sourceTree = "<group>"; };
+		E3DD9BF1223EA9FA00D87490 /* SoundsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundsService.swift; sourceTree = "<group>"; };
+		E3DD9BF3223EAA2400D87490 /* SoundName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundName.swift; sourceTree = "<group>"; };
+		E3DD9BF5223EAE0B00D87490 /* didFall.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = didFall.mp3; path = ../../../../../../Downloads/didFall.mp3; sourceTree = "<group>"; };
+		E3DD9BF8223EB0B600D87490 /* masks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = masks.swift; sourceTree = "<group>"; };
+		E3DD9BFA223EB28000D87490 /* falling.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = falling.mp3; path = ../../../../../../Downloads/falling.mp3; sourceTree = "<group>"; };
+		E3DD9BFC223EB58F00D87490 /* didBeginDrag.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = didBeginDrag.mp3; path = ../../../../../../Downloads/didBeginDrag.mp3; sourceTree = "<group>"; };
 		E3EC7305223C1B6200AEB8DD /* FirstInteraction.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FirstInteraction.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3EC7308223C1B6200AEB8DD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E3EC730A223C1B6200AEB8DD /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -66,6 +78,26 @@
 			path = PiecesFactory;
 			sourceTree = "<group>";
 		};
+		E3DD9BF0223EA93F00D87490 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				E3DD9BFC223EB58F00D87490 /* didBeginDrag.mp3 */,
+				E3DD9BFA223EB28000D87490 /* falling.mp3 */,
+				E3DD9BF5223EAE0B00D87490 /* didFall.mp3 */,
+				E3DD9BF1223EA9FA00D87490 /* SoundsService.swift */,
+				E3DD9BF3223EAA2400D87490 /* SoundName.swift */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
+		E3DD9BF7223EB0A600D87490 /* Collisions */ = {
+			isa = PBXGroup;
+			children = (
+				E3DD9BF8223EB0B600D87490 /* masks.swift */,
+			);
+			path = Collisions;
+			sourceTree = "<group>";
+		};
 		E3EC72FC223C1B6200AEB8DD = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +117,8 @@
 		E3EC7307223C1B6200AEB8DD /* FirstInteraction */ = {
 			isa = PBXGroup;
 			children = (
+				E3DD9BF7223EB0A600D87490 /* Collisions */,
+				E3DD9BF0223EA93F00D87490 /* Sounds */,
 				E354DEF4223E810D004E34D2 /* PiecesFactory */,
 				E3EC7323223C31DC00AEB8DD /* PiecesPicker */,
 				E3EC731F223C260D00AEB8DD /* SandBox */,
@@ -188,8 +222,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				E3EC730B223C1B6200AEB8DD /* art.scnassets in Resources */,
+				E3DD9BF6223EAE0B00D87490 /* didFall.mp3 in Resources */,
+				E3DD9BFB223EB28000D87490 /* falling.mp3 in Resources */,
 				E3EC7315223C1B6400AEB8DD /* LaunchScreen.storyboard in Resources */,
 				E3EC7312223C1B6400AEB8DD /* Assets.xcassets in Resources */,
+				E3DD9BFD223EB58F00D87490 /* didBeginDrag.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,10 +242,13 @@
 				E3EC7328223C588A00AEB8DD /* PiecePickerDelegate.swift in Sources */,
 				E354DEF6223E8144004E34D2 /* PieceType.swift in Sources */,
 				E3EC7321223C261E00AEB8DD /* SandBoxPlace.swift in Sources */,
+				E3DD9BF2223EA9FA00D87490 /* SoundsService.swift in Sources */,
 				E3EC7325223C321900AEB8DD /* PiecesPicker.swift in Sources */,
 				E354DEF8223E823D004E34D2 /* PiecesFactory.swift in Sources */,
 				E3EC732B223D0F7D00AEB8DD /* PieceDescriptor.swift in Sources */,
 				E3DBF4D0223DF4F200E2F274 /* Piece.swift in Sources */,
+				E3DD9BF4223EAA2400D87490 /* SoundName.swift in Sources */,
+				E3DD9BF9223EB0B600D87490 /* masks.swift in Sources */,
 				E354DEFA223E87CC004E34D2 /* Array+pieces.swift in Sources */,
 				E3DBF4CE223DED9000E2F274 /* PieceCollectionViewCell.swift in Sources */,
 				E3EC730D223C1B6200AEB8DD /* GameViewController.swift in Sources */,

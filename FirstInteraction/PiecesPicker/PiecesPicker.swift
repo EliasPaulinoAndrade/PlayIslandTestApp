@@ -14,6 +14,8 @@ class PiecesPicker: UIView {
     
     var piecesImages: [Piece]
     
+    var soundsService = SoundsService()
+    
     lazy private var pieceBackgroundView: UIView = {
         let pieceBackgroundView = UIView.init()
         
@@ -137,6 +139,7 @@ extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewData
         
         switch longPressRecognizer.state {
         case .began:
+            soundsService.didBeginDrag()
             hideOtherCells(forCellAtIndex: cellPosition)
             piecesDelegate?.piecePanDidBegan(withGestureRecognizer: longPressRecognizer, atPosition: cellPosition.row)
         case .ended:

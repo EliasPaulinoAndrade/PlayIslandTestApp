@@ -24,6 +24,8 @@ class SandBoxPlace: SCNNode {
     
     private var pieces: [SCNNode: PieceDescriptor] = [:]
     
+    private var soundService = SoundsService.init()
+    
     lazy private(set) var heights: [[Float]] = {
         var heights = [Array<Float>]()
         for lineIndex in 0..<minimumNumberOfLines {
@@ -80,7 +82,8 @@ class SandBoxPlace: SCNNode {
                 placePlaneNode.physicsBody?.angularDamping = 1
                 placePlaneNode.physicsBody?.friction = 1
                 placePlaneNode.physicsBody?.restitution = 0
-                placePlaneNode.categoryBitMask = 2
+                placePlaneNode.categoryBitMask = CategoryMask.floor.rawValue
+                placePlaneNode.categoryBitMask = CategoryMask.piece.rawValue
             }
         )]))
         
@@ -130,6 +133,7 @@ class SandBoxPlace: SCNNode {
         
         sceneView.addGestureRecognizer(UILongPressGestureRecognizer.init(target: self, action: #selector(sceneWasLongPressed(longPressGestureRecognizer:))))
         sceneView.scene?.physicsWorld.gravity.y = -20
+        sceneView.scene?.physicsWorld.contactDelegate = self
         
     }
     
@@ -253,6 +257,8 @@ class SandBoxPlace: SCNNode {
     }
     
     func pieceDragNeedEnd() {
+        
+        soundService.falling()
         if let addingPiece = self.addingPiece {
             allPiecesOpacity(1)
             addingPiece.pieceNode.removeAllActions()
@@ -275,6 +281,8 @@ class SandBoxPlace: SCNNode {
             addingPiece.pieceNode.physicsBody?.friction = 1
             addingPiece.pieceNode.physicsBody?.restitution = 0
             addingPiece.pieceNode.opacity = 1
+            addingPiece.pieceNode.physicsBody?.categoryBitMask = CategoryMask.piece.rawValue
+            addingPiece.pieceNode.physicsBody?.contactTestBitMask = CategoryMask.floor.rawValue | CategoryMask.piece.rawValue
             
             self.pieces[addingPiece.pieceNode] = addingPiece
             
@@ -285,3 +293,9 @@ class SandBoxPlace: SCNNode {
     }
 }
 
+extension SandBoxPlace: SCNPhysicsContactDelegate {
+    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
+        soundService.audioPlayer?.stop()
+        soundService.didFall()
+    }
+}
