@@ -56,7 +56,6 @@ class PiecesPicker: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     override func didMoveToSuperview() {
         guard let superView = self.superview else {
             return
@@ -64,11 +63,13 @@ class PiecesPicker: UIView {
         
         translatesAutoresizingMaskIntoConstraints = false
         bottomAnchor.constraint(equalTo: superView.bottomAnchor, constant: -10).isActive = true
-        heightAnchor.constraint(equalToConstant: 100).isActive = true
         centerXAnchor.constraint(equalTo: superView.centerXAnchor).isActive = true
+        heightAnchor.constraint(equalToConstant: 100).isActive = true
+        
         let selfLeftAnchor = leftAnchor.constraint(equalTo: superView.leftAnchor, constant: 10)
         selfLeftAnchor.priority = .defaultHigh
         selfLeftAnchor.isActive = true
+        
         let selfWidth = widthAnchor.constraint(lessThanOrEqualToConstant: 400)
         selfWidth.priority = .required
         selfWidth.isActive = true
@@ -88,7 +89,7 @@ class PiecesPicker: UIView {
         self.layer.cornerRadius = 50
         self.layer.masksToBounds = true
     }
-    
+
     func reloadData() {
         self.piecesCollectionView.reloadData()
     }

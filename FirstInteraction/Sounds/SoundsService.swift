@@ -10,35 +10,46 @@ import Foundation
 import AVFoundation
 import UIKit
 
-class SoundsService{
-    var audioPlayer: AVAudioPlayer?
+class SoundsService {
     var anterior: String?
     
+    var audioPlayers: [SoundsName: AVAudioPlayer?] = [:]
+    
     func falling(){
-        prepareAndPlay(forResource: .falling)
-        audioPlayer?.volume = 0.002
+        prepareAndPlay(forResource: .falling)?.volume = 0.002
+       
     }
     
     func didFall(){
-        prepareAndPlay(forResource: .didFall)
-        audioPlayer?.volume = 0.2
+        prepareAndPlay(forResource: .didFall)?.volume = 0.2
+       
     }
     
     func didBeginDrag(){
-        prepareAndPlay(forResource: .didBeginDrag)
-        audioPlayer?.volume = 0.2
+        prepareAndPlay(forResource: .didBeginDrag)?.volume = 0.2
+        
     }
     
-    func prepareAndPlay(forResource: SoundsName, ofType: String = "mp3", repeating: Bool = false) {
-        
-        if anterior != forResource.rawValue || anterior == nil {
+    func prepareAndPlay(forResource: SoundsName, ofType: String = "mp3", repeating: Bool = false) -> AVAudioPlayer? {
+        if let audioPlayer = self.audioPlayers[forResource] {
+            audioPlayer?.numberOfLoops = repeating ? 2 : 0
+            audioPlayer?.prepareToPlay()
+            audioPlayer?.play()
+            
+            return audioPlayer
+        } else {
             
             do{
-                if let fileURL = Bundle.main.path (forResource: forResource.rawValue, ofType: ofType){
-                    audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: fileURL))
-                    audioPlayer?.numberOfLoops = repeating ? 2 : 0
-                    audioPlayer?.prepareToPlay()
-                    anterior = forResource.rawValue
+                if let fileURL = Bundle.main.path(forResource: forResource.rawValue, ofType: ofType) {
+                    let audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: fileURL))
+                    audioPlayers[forResource] = audioPlayer
+                    audioPlayer.numberOfLoops = repeating ? 2 : 0
+                    
+                    audioPlayer.prepareToPlay()
+                    
+                    audioPlayer.play()
+                    
+                    return audioPlayer
                 } else {
                     print("No file with specified name exists")
                 }
@@ -48,6 +59,6 @@ class SoundsService{
             }
         }
         
-        audioPlayer?.play()
+        return nil
     }
 }

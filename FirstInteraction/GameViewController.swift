@@ -36,8 +36,13 @@ class GameViewController: UIViewController {
     lazy var cameraNode: SCNNode = {
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
-        cameraNode.position = SCNVector3(x: 0, y: 15, z: 20)
-        cameraNode.eulerAngles.x = -Float(Double.pi / 6)
+        cameraNode.position = SCNVector3(x: 0, y: 13, z: 25)
+        cameraNode.runAction(SCNAction.sequence([
+            SCNAction.wait(duration: 2),
+            SCNAction.move(by: SCNVector3.init(0, 0, -8), duration: 0.5)
+        ]))
+        
+        cameraNode.eulerAngles.x = -Float(Double.pi / 5)
         return cameraNode
     }()
     
@@ -45,7 +50,7 @@ class GameViewController: UIViewController {
         // create and add a light to the scene
         let lightNode = SCNNode()
         lightNode.light = SCNLight()
-        lightNode.light!.type = .omni
+        lightNode.light?.type = .omni
         lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
         
         return lightNode
@@ -70,13 +75,13 @@ class GameViewController: UIViewController {
     
     lazy var earthNode: SCNNode = {
         
-        let earthNode = SCNScene.init(named: "art.scnassets/earth")!.rootNode.childNode(withName: "Cone_003", recursively: false)!
+        let earthNode = SCNScene.init(named: "art.scnassets/earthModel.scn")!.rootNode.childNode(withName: "mountain", recursively: false)!
         
         var imageMaterial = SCNMaterial.init()
-        imageMaterial.diffuse.contents = UIImage(named: "mountainMaterial")
+        imageMaterial.diffuse.contents = UIColor.init(named: "floorGreen")
         imageMaterial.isDoubleSided = false
         
-//        earthNode.geometry?.materials = [imageMaterial]
+        earthNode.geometry?.materials = [imageMaterial]
         
         earthNode.scale = SCNVector3.init(7.5, 7.5, 7.5)
         earthNode.pivot = SCNMatrix4MakeTranslation(0, -1, 0)
@@ -134,10 +139,12 @@ class GameViewController: UIViewController {
        
         self.sceneView.backgroundColor = UIColor.clear
         self.view.layer.insertSublayer(linearGradientLayer, at: 0)
+        generateStars()
     }
     
     override func viewDidLayoutSubviews() {
         linearGradientLayer.frame = self.view.bounds
+        
     }
     
     func setupSceneView() {
@@ -151,6 +158,9 @@ class GameViewController: UIViewController {
         
         // allows the user to manipulate the camera
         sceneView.allowsCameraControl = true
+//        sceneView.defaultCameraController.automaticTarget = true
+//        sceneView.defaultCameraController.target = SCNVector3.zero
+//        sceneView.defaultCameraController.interactionMode = .
         
         // show statistics such as fps and timing information
 //        sceneView.showsStatistics = true
@@ -161,7 +171,44 @@ class GameViewController: UIViewController {
         sceneView.backgroundColor = UIColor.black
         
     }
-
+    
+    func generateStars() {
+        
+        for _ in 0..<30 {
+            
+            let randomX = Float.random(in: -30 ... 30)
+            
+            let randomY = Float.random(in: -30 ... 30)
+            
+            let randomZ = Float.random(in: -40 ... -20)
+            
+            let starBall = SCNSphere.init(radius: 0.15)
+            let starNode = SCNNode.init(geometry: starBall)
+            
+            starNode.position = SCNVector3.init(randomX, randomY, randomZ)
+            starNode.opacity = 0.7
+            
+            sceneView.scene?.rootNode.addChildNode(starNode)
+        }
+        
+        for _ in 0..<10{
+            
+            let randomX = Float.random(in: -40 ... 40)
+            
+            let randomY = Float.random(in: -40 ... 40)
+            
+            let randomZ = Float.random(in: 20 ... 40)
+            
+            let starBall = SCNSphere.init(radius: 0.15)
+            let starNode = SCNNode.init(geometry: starBall)
+            
+            starNode.position = SCNVector3.init(randomX, randomY, randomZ)
+            starNode.opacity = 0.7
+            
+            sceneView.scene?.rootNode.addChildNode(starNode)
+        }
+        
+    }
     
     override var shouldAutorotate: Bool {
         return true

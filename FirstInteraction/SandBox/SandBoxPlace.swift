@@ -26,6 +26,8 @@ class SandBoxPlace: SCNNode {
     
     private var soundService = SoundsService.init()
     
+    private var pieceIsFalling: Bool = false
+    
     lazy private(set) var heights: [[Float]] = {
         var heights = [Array<Float>]()
         for lineIndex in 0..<minimumNumberOfLines {
@@ -70,10 +72,11 @@ class SandBoxPlace: SCNNode {
         
         var placePlaneNode = SCNNode.init(geometry: placePlane)
         placePlaneNode.position = SCNVector3.zero
-        placePlaneNode.position.y -= 1
+        placePlaneNode.position.y -= 1.1
         placePlaneNode.eulerAngles.x += Float.pi / 2.0
         
         placePlaneNode.runAction(SCNAction.sequence([
+            SCNAction.wait(duration: 2.5),
             SCNAction.move(to: SCNVector3.init(0, -0.5, 0), duration: 0.5),
             SCNAction.run({ (_) in
                 placePlaneNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
@@ -259,6 +262,7 @@ class SandBoxPlace: SCNNode {
     func pieceDragNeedEnd() {
         
         soundService.falling()
+        pieceIsFalling = true
         if let addingPiece = self.addingPiece {
             allPiecesOpacity(1)
             addingPiece.pieceNode.removeAllActions()
@@ -295,7 +299,10 @@ class SandBoxPlace: SCNNode {
 
 extension SandBoxPlace: SCNPhysicsContactDelegate {
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
-        soundService.audioPlayer?.stop()
-        soundService.didFall()
+       
+        if pieceIsFalling {
+            soundService.didFall()
+            pieceIsFalling = false
+        }
     }
 }
