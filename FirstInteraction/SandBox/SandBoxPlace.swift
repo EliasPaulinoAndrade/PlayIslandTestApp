@@ -295,6 +295,35 @@ class SandBoxPlace: SCNNode {
         
         floorOverlayNode.opacity = 0
     }
+    
+    func needAddSpinner(spinnerNode: SCNNode) {
+
+        spinnerNode.physicsBody = SCNPhysicsBody.init(type: .dynamic, shape: nil)
+        spinnerNode.physicsBody?.isAffectedByGravity = true
+
+        spinnerNode.eulerAngles = SCNVector3.zero
+        spinnerNode.physicsBody?.applyTorque(SCNVector4.init(0, 1, 0, 10000), asImpulse: false)
+        
+        let baseAnimationTime = 0.3
+        spinnerNode.runAction(
+            SCNAction.sequence([
+                SCNAction.rotateTo(x: 0, y: 0, z: 0, duration: 0.1),
+                SCNAction.group([
+                    SCNAction.move(by: SCNVector3.init(-spinnerNode.position.x, -spinnerNode.position.y + 10, -spinnerNode.position.z), duration: baseAnimationTime * 2),
+                    SCNAction.move(by: SCNVector3.init(0, 3, 0), duration: baseAnimationTime),
+                    SCNAction.sequence([
+                        SCNAction.wait(duration: baseAnimationTime),
+                        SCNAction.move(by: SCNVector3.init(0, -3, 0), duration: baseAnimationTime)
+                        ]),
+                    SCNAction.move(by: SCNVector3.init(3, 0, 0), duration: baseAnimationTime),
+                    SCNAction.sequence([
+                        SCNAction.wait(duration: baseAnimationTime),
+                        SCNAction.move(by: SCNVector3.init(-3, 0, 0), duration: baseAnimationTime)
+                    ])
+                ])
+            ])
+        )
+    }
 }
 
 extension SandBoxPlace: SCNPhysicsContactDelegate {

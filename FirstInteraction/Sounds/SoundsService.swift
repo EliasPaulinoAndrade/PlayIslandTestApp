@@ -21,8 +21,8 @@ class SoundsService {
     }
     
     func didFall(){
+        audioPlayers[SoundsName.falling]??.stop()
         prepareAndPlay(forResource: .didFall)?.volume = 0.2
-       
     }
     
     func didBeginDrag(){

@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E3118C782240094E000306B1 /* SpinnerPlace.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3118C772240094E000306B1 /* SpinnerPlace.swift */; };
+		E3118C7A224043F6000306B1 /* SpinnerInputDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3118C79224043F6000306B1 /* SpinnerInputDelegate.swift */; };
+		E3118C7C2240474D000306B1 /* SpinnerInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3118C7B2240474D000306B1 /* SpinnerInput.swift */; };
+		E3118C80224060F8000306B1 /* SpinnerInputScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = E3118C7F224060F8000306B1 /* SpinnerInputScene.sks */; };
+		E3118C8222408075000306B1 /* SpinnerInputScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3118C8122408075000306B1 /* SpinnerInputScene.swift */; };
+		E34E1205223FE22700F29365 /* GameType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34E1204223FE22700F29365 /* GameType.swift */; };
 		E354DEF6223E8144004E34D2 /* PieceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E354DEF5223E8144004E34D2 /* PieceType.swift */; };
 		E354DEF8223E823D004E34D2 /* PiecesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E354DEF7223E823D004E34D2 /* PiecesFactory.swift */; };
 		E354DEFA223E87CC004E34D2 /* Array+pieces.swift in Sources */ = {isa = PBXBuildFile; fileRef = E354DEF9223E87CC004E34D2 /* Array+pieces.swift */; };
@@ -32,6 +38,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E3118C772240094E000306B1 /* SpinnerPlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerPlace.swift; sourceTree = "<group>"; };
+		E3118C79224043F6000306B1 /* SpinnerInputDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerInputDelegate.swift; sourceTree = "<group>"; };
+		E3118C7B2240474D000306B1 /* SpinnerInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerInput.swift; sourceTree = "<group>"; };
+		E3118C7F224060F8000306B1 /* SpinnerInputScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SpinnerInputScene.sks; sourceTree = "<group>"; };
+		E3118C8122408075000306B1 /* SpinnerInputScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerInputScene.swift; sourceTree = "<group>"; };
+		E34E1204223FE22700F29365 /* GameType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameType.swift; sourceTree = "<group>"; };
 		E354DEF5223E8144004E34D2 /* PieceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceType.swift; sourceTree = "<group>"; };
 		E354DEF7223E823D004E34D2 /* PiecesFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiecesFactory.swift; sourceTree = "<group>"; };
 		E354DEF9223E87CC004E34D2 /* Array+pieces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+pieces.swift"; sourceTree = "<group>"; };
@@ -69,6 +81,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E3118C7622400934000306B1 /* Spinner */ = {
+			isa = PBXGroup;
+			children = (
+				E3118C7B2240474D000306B1 /* SpinnerInput.swift */,
+				E3118C772240094E000306B1 /* SpinnerPlace.swift */,
+				E3118C79224043F6000306B1 /* SpinnerInputDelegate.swift */,
+				E3118C7F224060F8000306B1 /* SpinnerInputScene.sks */,
+				E3118C8122408075000306B1 /* SpinnerInputScene.swift */,
+			);
+			path = Spinner;
+			sourceTree = "<group>";
+		};
 		E354DEF4223E810D004E34D2 /* PiecesFactory */ = {
 			isa = PBXGroup;
 			children = (
@@ -117,6 +141,7 @@
 		E3EC7307223C1B6200AEB8DD /* FirstInteraction */ = {
 			isa = PBXGroup;
 			children = (
+				E3118C7622400934000306B1 /* Spinner */,
 				E3DD9BF7223EB0A600D87490 /* Collisions */,
 				E3DD9BF0223EA93F00D87490 /* Sounds */,
 				E354DEF4223E810D004E34D2 /* PiecesFactory */,
@@ -126,6 +151,7 @@
 				E3EC7308223C1B6200AEB8DD /* AppDelegate.swift */,
 				E3EC730A223C1B6200AEB8DD /* art.scnassets */,
 				E3EC730C223C1B6200AEB8DD /* GameViewController.swift */,
+				E34E1204223FE22700F29365 /* GameType.swift */,
 				E3EC7311223C1B6400AEB8DD /* Assets.xcassets */,
 				E3EC7313223C1B6400AEB8DD /* LaunchScreen.storyboard */,
 				E3EC7316223C1B6400AEB8DD /* Info.plist */,
@@ -223,6 +249,7 @@
 			files = (
 				E3EC730B223C1B6200AEB8DD /* art.scnassets in Resources */,
 				E3DD9BF6223EAE0B00D87490 /* didFall.mp3 in Resources */,
+				E3118C80224060F8000306B1 /* SpinnerInputScene.sks in Resources */,
 				E3DD9BFB223EB28000D87490 /* falling.mp3 in Resources */,
 				E3EC7315223C1B6400AEB8DD /* LaunchScreen.storyboard in Resources */,
 				E3EC7312223C1B6400AEB8DD /* Assets.xcassets in Resources */,
@@ -243,13 +270,18 @@
 				E354DEF6223E8144004E34D2 /* PieceType.swift in Sources */,
 				E3EC7321223C261E00AEB8DD /* SandBoxPlace.swift in Sources */,
 				E3DD9BF2223EA9FA00D87490 /* SoundsService.swift in Sources */,
+				E3118C7A224043F6000306B1 /* SpinnerInputDelegate.swift in Sources */,
+				E3118C8222408075000306B1 /* SpinnerInputScene.swift in Sources */,
 				E3EC7325223C321900AEB8DD /* PiecesPicker.swift in Sources */,
 				E354DEF8223E823D004E34D2 /* PiecesFactory.swift in Sources */,
 				E3EC732B223D0F7D00AEB8DD /* PieceDescriptor.swift in Sources */,
+				E3118C782240094E000306B1 /* SpinnerPlace.swift in Sources */,
 				E3DBF4D0223DF4F200E2F274 /* Piece.swift in Sources */,
+				E3118C7C2240474D000306B1 /* SpinnerInput.swift in Sources */,
 				E3DD9BF4223EAA2400D87490 /* SoundName.swift in Sources */,
 				E3DD9BF9223EB0B600D87490 /* masks.swift in Sources */,
 				E354DEFA223E87CC004E34D2 /* Array+pieces.swift in Sources */,
+				E34E1205223FE22700F29365 /* GameType.swift in Sources */,
 				E3DBF4CE223DED9000E2F274 /* PieceCollectionViewCell.swift in Sources */,
 				E3EC730D223C1B6200AEB8DD /* GameViewController.swift in Sources */,
 				E3EC7309223C1B6200AEB8DD /* AppDelegate.swift in Sources */,

@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow.init(frame: UIScreen.main.bounds)
         
-        let firstController = GameViewController.init(withPieces: AppDelegate.slots)
+        let firstController = GameViewController.init()
         
         window?.rootViewController = firstController
         window?.makeKeyAndVisible()

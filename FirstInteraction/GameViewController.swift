@@ -12,6 +12,8 @@ import SceneKit
 
 class GameViewController: UIViewController {
     
+    public var gameType: GameType
+    
     private var piecesFactory = PiecesFactory()
     private var pieceSlots: [PieceSlot] = []
     
@@ -39,7 +41,14 @@ class GameViewController: UIViewController {
         cameraNode.position = SCNVector3(x: 0, y: 13, z: 25)
         cameraNode.runAction(SCNAction.sequence([
             SCNAction.wait(duration: 2),
-            SCNAction.move(by: SCNVector3.init(0, 0, -8), duration: 0.5)
+            SCNAction.move(by: SCNVector3.init(0, 0, -8), duration: 0.5),
+            SCNAction.run({ (_) in
+                if self.gameType == .blocks {
+                    self.sceneView.allowsCameraControl = true
+                }
+                
+//                self.sandBox.needAddSpinner(spinnerNode: self.spinnerPlace.spinnerNode)
+            })
         ]))
         
         cameraNode.eulerAngles.x = -Float(Double.pi / 5)
@@ -54,6 +63,16 @@ class GameViewController: UIViewController {
         lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
         
         return lightNode
+    }()
+    
+    lazy var subLightNode: SCNNode = {
+        let subLightNode = SCNNode()
+        subLightNode.light = SCNLight()
+        subLightNode.light?.type = .omni
+        subLightNode.position = SCNVector3(x: 10, y: -10, z: 10)
+        subLightNode.light?.intensity = 500
+        
+        return subLightNode
     }()
     
     lazy var ambientLightNode: SCNNode = {
@@ -75,14 +94,8 @@ class GameViewController: UIViewController {
     
     lazy var earthNode: SCNNode = {
         
-        let earthNode = SCNScene.init(named: "art.scnassets/earthModel.scn")!.rootNode.childNode(withName: "mountain", recursively: false)!
-        
-        var imageMaterial = SCNMaterial.init()
-        imageMaterial.diffuse.contents = UIColor.init(named: "floorGreen")
-        imageMaterial.isDoubleSided = false
-        
-        earthNode.geometry?.materials = [imageMaterial]
-        
+        let earthNode = SCNScene.init(named: "art.scnassets/sounou.scn")!.rootNode.childNode(withName: "mountain", recursively: false)!
+
         earthNode.scale = SCNVector3.init(7.5, 7.5, 7.5)
         earthNode.pivot = SCNMatrix4MakeTranslation(0, -1, 0)
         earthNode.position.y -= 0.7
@@ -104,14 +117,30 @@ class GameViewController: UIViewController {
         return linearGradientLayer
     }()
     
+    lazy var spinnerPlace: SpinnerPlace = {
+        return SpinnerPlace.init(withScene: sceneView, andParentView: view)
+    }()
+    
+    lazy var spinnerInput: SpinnerInput = {
+        let spinnerInput = SpinnerInput.init()
+        
+        spinnerInput.spinnerDelegate = self
+        
+        return spinnerInput
+    }()
+    
     lazy var sceneView: SCNView = {
         
         return SCNView.init()
     }()
     
-    init(withPieces pieces: [PieceSlot]) {
-        self.pieceSlots = pieces
-        
+    init(withPieces pieces: [PieceSlot]? = nil) {
+        if let pieces = pieces {
+            self.pieceSlots = pieces
+            self.gameType = .blocks
+        } else {
+            self.gameType = .spin
+        }
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -131,15 +160,23 @@ class GameViewController: UIViewController {
         scene.rootNode.addChildNode(cameraNode)
         scene.rootNode.addChildNode(lightNode)
         scene.rootNode.addChildNode(ambientLightNode)
-        scene.rootNode.addChildNode(sandBox)
         scene.rootNode.addChildNode(earthNode)
+        scene.rootNode.addChildNode(subLightNode)
+        scene.rootNode.addChildNode(sandBox)
         
         setupSceneView()
-        self.view.addSubview(piecesPicker)
+        
+        if gameType == .blocks {
+            self.view.addSubview(piecesPicker)
+        } else {
+            self.sceneView.scene?.rootNode.addChildNode(spinnerPlace)
+            self.view.addSubview(spinnerInput)
+        }
        
         self.sceneView.backgroundColor = UIColor.clear
         self.view.layer.insertSublayer(linearGradientLayer, at: 0)
         generateStars()
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -157,7 +194,7 @@ class GameViewController: UIViewController {
         sceneView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         
         // allows the user to manipulate the camera
-        sceneView.allowsCameraControl = true
+        sceneView.allowsCameraControl = false
 //        sceneView.defaultCameraController.automaticTarget = true
 //        sceneView.defaultCameraController.target = SCNVector3.zero
 //        sceneView.defaultCameraController.interactionMode = .
@@ -250,5 +287,16 @@ extension GameViewController: PiecePickerDelegate {
         
         let touchPoint = gestureRecognizer.location(in: sceneView)
         sandBox.handlePieceDrag(inPoint: touchPoint)
+    }
+}
+
+extension GameViewController: SpinnerInputDelegate {
+    func needRotateSpinner() {
+        
+        self.spinnerPlace.spinnerNode.runAction(SCNAction.rotateBy(x: 0, y: 0.1, z: 0, duration: 0.1))
+    }
+    
+    func needAddSpinner() {
+        sandBox.needAddSpinner(spinnerNode: self.spinnerPlace.spinnerNode)
     }
 }
