@@ -9,6 +9,7 @@
 import Foundation
 
 protocol SpinnerInputDelegate: AnyObject {
-    func needAddSpinner()
+    func needAddSpinner(to direction: SpinnerDirection)
     func needRotateSpinner()
+    func needDequeueSpinner()
 }

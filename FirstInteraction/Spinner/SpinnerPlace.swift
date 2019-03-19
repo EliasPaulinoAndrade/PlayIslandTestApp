@@ -33,13 +33,32 @@ class SpinnerPlace: SCNNode {
         return spinnerNode
     }()
     
-    init(withScene sceneView: SCNView, andParentView parentView: UIView) {
+    func addNewSpinner(withColor color: PieceColorType = PieceColorType.blue) {
+        if let newSpinner = SCNScene.init(named: "art.scnassets/spinner.scn")?.rootNode.childNode(withName: "spinner", recursively: false) {
+            self.spinnerNode = newSpinner
+            spinnerNode.position.z = 15
+            spinnerNode.position.y = 9
+            spinnerNode.removeAllActions()
+            spinnerNode.physicsBody = nil
+            
+            spinnerNode.geometry?.material(named: "spinnerTexture")?.diffuse.contents = UIImage.init(named: "spinnerTexture\(color)") ?? UIImage.init(named: "spinnerTexture")
+            
+            addChildNode(self.spinnerNode)
+        }
+    }
+    
+    init(withScene sceneView: SCNView, andParentView parentView: UIView, andFirstSpinnerColor color: PieceColorType?) {
         super.init()
         
         self.parentView = parentView
         self.sceneView = sceneView
         
         addChildNode(spinnerNode)
+        if let color = color {
+            spinnerNode.geometry?.material(named: "spinnerTexture")?.diffuse.contents = UIImage.init(named: "spinnerTexture\(color)") ?? UIImage.init(named: "spinnerTexture")
+        } else {
+            spinnerNode.geometry?.material(named: "spinnerTexture")?.diffuse.contents = UIImage.init(named: "spinnerTexture")
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

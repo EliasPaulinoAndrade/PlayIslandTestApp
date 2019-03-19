@@ -13,6 +13,7 @@ class PiecesPicker: UIView {
     weak var piecesDelegate: PiecePickerDelegate?
     
     var piecesImages: [Piece]
+    var aligment: PiecesPickerAligment
     
     var soundsService = SoundsService()
     
@@ -37,9 +38,10 @@ class PiecesPicker: UIView {
         return piecesCollectionView
     }()
     
-    init(piecesImages: [Piece]) {
+    init(piecesImages: [Piece], andAligment aligment: PiecesPickerAligment) {
         
         self.piecesImages = piecesImages
+        self.aligment = aligment
         super.init(frame: CGRect.zero)
         addSubview(pieceBackgroundView)
         addSubview(piecesCollectionView)
@@ -62,7 +64,12 @@ class PiecesPicker: UIView {
         }
         
         translatesAutoresizingMaskIntoConstraints = false
-        bottomAnchor.constraint(equalTo: superView.bottomAnchor, constant: -10).isActive = true
+        
+        if aligment == .bottom {
+            bottomAnchor.constraint(equalTo: superView.bottomAnchor, constant: -10).isActive = true
+        } else {
+            topAnchor.constraint(equalTo: superView.topAnchor, constant: 10).isActive = true
+        }
         centerXAnchor.constraint(equalTo: superView.centerXAnchor).isActive = true
         heightAnchor.constraint(equalToConstant: 100).isActive = true
         
@@ -106,7 +113,7 @@ extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewData
         if let pieceCell = cell as? PieceCollectionViewCell {
             let piece = piecesImages[indexPath.row]
             pieceCell.imageView.image = piece.image
-            pieceCell.tagLabel.text = String(piece.number)
+            pieceCell.tagLabel.text = piece.tag
             
             if piece.enabled {
                 pieceCell.layer.opacity = 1
@@ -183,5 +190,12 @@ extension PiecesPicker: UICollectionViewDelegateFlowLayout, UICollectionViewData
         let width = height
         
         return CGSize.init(width: width, height: height)
+    }
+    
+    func removeFirstPeace() {
+        if piecesImages.count > 0 {
+            self.piecesImages.remove(at: 0)
+            self.piecesCollectionView.deleteItems(at: [IndexPath.init(row: 0, section: 0)])
+        }
     }
 }

@@ -16,12 +16,20 @@ class GameViewController: UIViewController {
     
     private var piecesFactory = PiecesFactory()
     private var pieceSlots: [PieceSlot] = []
+    private var spinnerSlots: [SpinnerSlot] = []
     
     lazy var piecesPicker: PiecesPicker = {
         
-        let pieces = self.pieceSlots.pieces()
+        var pieces: [Piece] = []
         
-        let piecesPicker = PiecesPicker.init(piecesImages: pieces)
+        switch gameType {
+        case .blocks:
+            pieces = self.pieceSlots.pieces()
+        case .spin:
+            pieces = self.spinnerSlots.pieces()
+        }
+        
+        let piecesPicker = PiecesPicker.init(piecesImages: pieces, andAligment: gameType == .blocks ? .bottom : .top )
         piecesPicker.piecesDelegate = self
         piecesPicker.layer.masksToBounds = false
         
@@ -118,7 +126,7 @@ class GameViewController: UIViewController {
     }()
     
     lazy var spinnerPlace: SpinnerPlace = {
-        return SpinnerPlace.init(withScene: sceneView, andParentView: view)
+        return SpinnerPlace.init(withScene: sceneView, andParentView: view, andFirstSpinnerColor: self.spinnerSlots.first?.color)
     }()
     
     lazy var spinnerInput: SpinnerInput = {
@@ -134,13 +142,15 @@ class GameViewController: UIViewController {
         return SCNView.init()
     }()
     
-    init(withPieces pieces: [PieceSlot]? = nil) {
-        if let pieces = pieces {
-            self.pieceSlots = pieces
-            self.gameType = .blocks
-        } else {
-            self.gameType = .spin
-        }
+    init(withPieces pieces: [PieceSlot]) {
+        self.pieceSlots = pieces
+        self.gameType = .blocks
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    init(withSpinners spinners: [SpinnerSlot]) {
+        self.gameType = .spin
+        self.spinnerSlots = spinners
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -166,12 +176,12 @@ class GameViewController: UIViewController {
         
         setupSceneView()
         
-        if gameType == .blocks {
-            self.view.addSubview(piecesPicker)
-        } else {
+        if gameType == .spin {
             self.sceneView.scene?.rootNode.addChildNode(spinnerPlace)
             self.view.addSubview(spinnerInput)
         }
+        
+        self.view.addSubview(piecesPicker)
        
         self.sceneView.backgroundColor = UIColor.clear
         self.view.layer.insertSublayer(linearGradientLayer, at: 0)
@@ -272,7 +282,7 @@ extension GameViewController: PiecePickerDelegate {
         let slot = self.pieceSlots[position]
         let descriptor = piecesFactory.makePiece(ofType: slot.pieceType, withColor: slot.color)
         sandBox.pieceDragNeedBegan(withPiece: descriptor)
-        piecesPicker.piecesImages[position].number = slot.quantity - slot.usedPieces
+        piecesPicker.piecesImages[position].tag = String(slot.quantity - slot.usedPieces)
     }
     
     func piecePanDidEnded(withGestureRecognizer gestureRecognizer: UILongPressGestureRecognizer, atPosition position: Int) {
@@ -291,12 +301,27 @@ extension GameViewController: PiecePickerDelegate {
 }
 
 extension GameViewController: SpinnerInputDelegate {
-    func needRotateSpinner() {
-        
-        self.spinnerPlace.spinnerNode.runAction(SCNAction.rotateBy(x: 0, y: 0.1, z: 0, duration: 0.1))
+    func needAddSpinner(to direction: SpinnerDirection) {
+        self.spinnerSlots.remove(at: 0)
+        sandBox.needAddSpinner(spinnerNode: self.spinnerPlace.spinnerNode, direction: direction) {
+            if self.piecesPicker.piecesImages.count > 0 {
+                if let spinnerColor = self.spinnerSlots.first?.color {
+                    self.spinnerPlace.addNewSpinner(withColor: spinnerColor)
+                } else {
+                    self.spinnerPlace.addNewSpinner()
+                }
+                self.spinnerInput.needResetView()
+            }
+        }
     }
     
-    func needAddSpinner() {
-        sandBox.needAddSpinner(spinnerNode: self.spinnerPlace.spinnerNode)
+    func needDequeueSpinner() {
+        
+        self.piecesPicker.removeFirstPeace()
+    }
+    
+    func needRotateSpinner() {
+        
+        self.spinnerPlace.spinnerNode.runAction(SCNAction.rotateBy(x: 0, y: 0.1, z: 0, duration: 0.05))
     }
 }

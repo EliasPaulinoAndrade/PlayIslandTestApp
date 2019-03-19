@@ -15,7 +15,23 @@ extension Array where Element == PieceSlot {
         
         for slot in self {
             let pieceImage = UIImage.init(named: "\(slot.pieceType)\(slot.color)") ?? UIImage.init(named: "\(slot.pieceType)")
-            let piece = Piece.init(image: pieceImage, number: slot.quantity, enabled: true)
+            let piece = Piece.init(image: pieceImage, tag: String(slot.quantity), enabled: true)
+            
+            pieces.append(piece)
+        }
+        
+        return pieces
+    }
+}
+
+extension Array where Element == SpinnerSlot {
+    func pieces() -> [Piece] {
+        var pieces = Array<Piece>()
+        
+        for slot in self {
+            
+            let pieceImage = UIImage.init(named: "spinner\(slot.color)") ?? UIImage.init(named: "spinner")
+            let piece = Piece.init(image: pieceImage, tag: "\(slot.color)", enabled: true)
             
             pieces.append(piece)
         }

@@ -296,8 +296,8 @@ class SandBoxPlace: SCNNode {
         floorOverlayNode.opacity = 0
     }
     
-    func needAddSpinner(spinnerNode: SCNNode) {
-
+    func needAddSpinner(spinnerNode: SCNNode, direction: SpinnerDirection, completion: @escaping () -> ()) {
+        
         spinnerNode.physicsBody = SCNPhysicsBody.init(type: .dynamic, shape: nil)
         spinnerNode.physicsBody?.isAffectedByGravity = true
 
@@ -305,24 +305,68 @@ class SandBoxPlace: SCNNode {
         spinnerNode.physicsBody?.applyTorque(SCNVector4.init(0, 1, 0, 10000), asImpulse: false)
         
         let baseAnimationTime = 0.3
+        
+        var groupedActions: [SCNAction] = [
+            SCNAction.move(by: SCNVector3.init(-spinnerNode.position.x, -spinnerNode.position.y + 10, -spinnerNode.position.z), duration: baseAnimationTime * 2)
+        ]
+        
+        switch direction {
+        case .left:
+            groupedActions.append(contentsOf: [
+                SCNAction.move(by: SCNVector3.init(0, 3, 0), duration: baseAnimationTime),
+                SCNAction.sequence([
+                    SCNAction.wait(duration: baseAnimationTime),
+                    SCNAction.move(by: SCNVector3.init(0, -3, 0), duration: baseAnimationTime)
+                ]),
+                SCNAction.move(by: SCNVector3.init(3, 0, 0), duration: baseAnimationTime),
+                SCNAction.sequence([
+                    SCNAction.wait(duration: baseAnimationTime),
+                    SCNAction.move(by: SCNVector3.init(-3, 0, 0), duration: baseAnimationTime)
+                ])]
+            )
+        case .right:
+            groupedActions.append(contentsOf: [
+                SCNAction.move(by: SCNVector3.init(0, 3, 0), duration: baseAnimationTime),
+                SCNAction.sequence([
+                    SCNAction.wait(duration: baseAnimationTime),
+                    SCNAction.move(by: SCNVector3.init(0, -3, 0), duration: baseAnimationTime)
+                ]),
+                SCNAction.move(by: SCNVector3.init(-3, 0, 0), duration: baseAnimationTime),
+                SCNAction.sequence([
+                    SCNAction.wait(duration: baseAnimationTime),
+                    SCNAction.move(by: SCNVector3.init(3, 0, 0), duration: baseAnimationTime)
+                ])]
+            )
+        case .middle:
+            groupedActions.append(contentsOf: [
+                SCNAction.move(by: SCNVector3.init(0, 3, 0), duration: baseAnimationTime),
+                SCNAction.sequence([
+                    SCNAction.wait(duration: baseAnimationTime),
+                    SCNAction.move(by: SCNVector3.init(0, -3, 0), duration: baseAnimationTime)
+                ])]
+            )
+        }
+        
         spinnerNode.runAction(
             SCNAction.sequence([
                 SCNAction.rotateTo(x: 0, y: 0, z: 0, duration: 0.1),
-                SCNAction.group([
-                    SCNAction.move(by: SCNVector3.init(-spinnerNode.position.x, -spinnerNode.position.y + 10, -spinnerNode.position.z), duration: baseAnimationTime * 2),
-                    SCNAction.move(by: SCNVector3.init(0, 3, 0), duration: baseAnimationTime),
-                    SCNAction.sequence([
-                        SCNAction.wait(duration: baseAnimationTime),
-                        SCNAction.move(by: SCNVector3.init(0, -3, 0), duration: baseAnimationTime)
-                        ]),
-                    SCNAction.move(by: SCNVector3.init(3, 0, 0), duration: baseAnimationTime),
-                    SCNAction.sequence([
-                        SCNAction.wait(duration: baseAnimationTime),
-                        SCNAction.move(by: SCNVector3.init(-3, 0, 0), duration: baseAnimationTime)
-                    ])
-                ])
+                SCNAction.group(groupedActions),
+                SCNAction.run({ (_) in
+                    completion()
+                })
             ])
         )
+        
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (timer) in
+            let randomX = Float.random(in: -5..<5)
+//            let randomY = Float.random(in: -3..<3)
+            let randomZ = Float.random(in: -5..<5)
+            
+            
+            let randomForce = SCNVector3.init(randomX, 0, randomZ)
+            
+            spinnerNode.physicsBody?.velocity = randomForce
+        }
     }
 }
 

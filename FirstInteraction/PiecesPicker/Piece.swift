@@ -11,6 +11,6 @@ import UIKit
 
 struct Piece {
     var image: UIImage?
-    var number: Int
+    var tag: String
     var enabled: Bool = true
 }

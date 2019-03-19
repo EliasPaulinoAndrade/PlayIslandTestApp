@@ -26,12 +26,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         PieceSlot.init(pieceType: .floorSideWalk, quantity: 3, color: .green),
         PieceSlot.init(pieceType: .floorAsphalt, quantity: 3, color: .green)
     ]
+    
+    static let spinners: [SpinnerSlot] = [
+        SpinnerSlot.init(color: .blue),
+        SpinnerSlot.init(color: .green),
+        SpinnerSlot.init(color: .blue),
+        SpinnerSlot.init(color: .pink),
+        SpinnerSlot.init(color: .red)
+    ]
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         window = UIWindow.init(frame: UIScreen.main.bounds)
         
-        let firstController = GameViewController.init()
+        let firstController = GameViewController.init(withSpinners: AppDelegate.spinners)
         
         window?.rootViewController = firstController
         window?.makeKeyAndVisible()
