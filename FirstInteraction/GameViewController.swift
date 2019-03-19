@@ -106,7 +106,7 @@ class GameViewController: UIViewController {
 
         earthNode.scale = SCNVector3.init(7.5, 7.5, 7.5)
         earthNode.pivot = SCNMatrix4MakeTranslation(0, -1, 0)
-        earthNode.position.y -= 0.7
+        earthNode.position.y -= 0.9
         
         return earthNode
     }()
@@ -140,6 +140,25 @@ class GameViewController: UIViewController {
     lazy var sceneView: SCNView = {
         
         return SCNView.init()
+    }()
+    
+    lazy var endGameView: UIView = {
+        let endGameView = UIView.init()
+        
+        endGameView.backgroundColor = UIColor.white
+        endGameView.layer.cornerRadius = 20
+        endGameView.clipsToBounds = true
+        
+        return endGameView
+    }()
+    
+    lazy var endGameBackView: UIView = {
+        let endGameView = UIView.init()
+        
+        endGameView.backgroundColor = UIColor.black
+        endGameView.layer.opacity = 0.8
+        
+        return endGameView
     }()
     
     init(withPieces pieces: [PieceSlot]) {
@@ -216,6 +235,53 @@ class GameViewController: UIViewController {
         
         // configure the view
         sceneView.backgroundColor = UIColor.black
+        
+        
+    }
+    
+    func showEndGameView() {
+        
+        self.view.addSubview(endGameBackView)
+        self.view.addSubview(endGameView)
+        
+        endGameBackView.translatesAutoresizingMaskIntoConstraints = false
+        endGameBackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        endGameBackView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        endGameBackView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        endGameBackView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        endGameView.translatesAutoresizingMaskIntoConstraints = false
+        endGameView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1, constant: -20).isActive = true
+        endGameView.heightAnchor.constraint(equalToConstant: 400).isActive = true
+        endGameView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        endGameView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+        let endGameLabel = UILabel.init()
+        endGameLabel.text = "Seus Peões Acabaram"
+        endGameLabel.numberOfLines = 0
+        endGameLabel.textAlignment = .center
+        endGameLabel.font = UIFont(name: endGameLabel.font.fontName, size: 35)
+        endGameLabel.font = UIFont.boldSystemFont(ofSize: 35)
+        
+        let endGameImage = UIImageView.init()
+        endGameImage.image = UIImage.init(named: "endGameView")
+        endGameImage.contentMode = .scaleAspectFit
+        
+        
+        endGameView.addSubview(endGameLabel)
+        endGameView.addSubview(endGameImage)
+        
+        endGameLabel.translatesAutoresizingMaskIntoConstraints = false
+        endGameLabel.leftAnchor.constraint(equalTo: endGameView.leftAnchor, constant: 30).isActive = true
+        endGameLabel.rightAnchor.constraint(equalTo: endGameView.rightAnchor, constant: -30).isActive = true
+        endGameLabel.topAnchor.constraint(equalTo: endGameView.topAnchor, constant: 30).isActive = true
+        
+        endGameImage.translatesAutoresizingMaskIntoConstraints = false
+        endGameImage.leftAnchor.constraint(equalTo: endGameView.leftAnchor, constant: 30).isActive = true
+        endGameImage.rightAnchor.constraint(equalTo: endGameView.rightAnchor, constant: -30).isActive = true
+        endGameImage.topAnchor.constraint(equalTo: endGameLabel.bottomAnchor, constant: 10).isActive = true
+        endGameImage.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        endGameImage.bottomAnchor.constraint(equalTo: endGameView.bottomAnchor, constant: -30).isActive = true
         
     }
     
@@ -311,6 +377,10 @@ extension GameViewController: SpinnerInputDelegate {
                     self.spinnerPlace.addNewSpinner()
                 }
                 self.spinnerInput.needResetView()
+            } else {
+                DispatchQueue.main.async {
+                    self.showEndGameView()
+                }
             }
         }
     }

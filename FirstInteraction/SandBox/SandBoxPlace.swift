@@ -8,6 +8,7 @@
 
 import Foundation
 import SceneKit
+import CoreMotion
 
 typealias GridPosition = (line: Int, column: Int)
 
@@ -19,6 +20,9 @@ class SandBoxPlace: SCNNode {
     private(set) var width: CGFloat
     private(set) var overlayDistance: Float
     private(set) var minimumNumberOfLines: Int
+    
+    var motion = CMMotionManager.init()
+    var timer: Timer?
     
     private var addingPiece: PieceDescriptor?
     
@@ -359,15 +363,43 @@ class SandBoxPlace: SCNNode {
         
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (timer) in
             let randomX = Float.random(in: -5..<5)
-//            let randomY = Float.random(in: -3..<3)
             let randomZ = Float.random(in: -5..<5)
-            
             
             let randomForce = SCNVector3.init(randomX, 0, randomZ)
             
             spinnerNode.physicsBody?.velocity = randomForce
         }
+        
+        // Make sure the accelerometer hardware is available.
+        if self.motion.isAccelerometerAvailable {
+            self.motion.accelerometerUpdateInterval = 1.0 / 60.0  // 60 Hz
+            self.motion.startAccelerometerUpdates()
+            
+            // Configure a timer to fetch the data.
+            self.timer = Timer(fire: Date(), interval: (1.0/60.0),
+                               repeats: true, block: { (timer) in
+                // Get the accelerometer data.
+                if let data = self.motion.accelerometerData {
+                    let x = data.acceleration.x
+                    let y = data.acceleration.y
+                    let z = data.acceleration.z
+                    
+                    print(x, y, z)
+                    
+                    let randomForce = SCNVector3.init(x/2, 0, -y/2)
+                    spinnerNode.physicsBody?.applyForce(randomForce, asImpulse: true)
+                }
+            })
+            
+            // Add the timer to the current run loop.
+            RunLoop.current.add(self.timer!, forMode: .default)
+        }
     }
+    
+    func startAccelerometers() {
+        
+    }
+    
 }
 
 extension SandBoxPlace: SCNPhysicsContactDelegate {

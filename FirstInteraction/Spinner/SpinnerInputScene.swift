@@ -72,7 +72,9 @@ class SpinnerInputScene: SKScene {
             wireButton.position = CGPoint.init(x: 0, y: -view.frame.height/2 + 40)
             placeHolderButton.position = CGPoint.init(x: -40, y: -view.frame.height/2 - 80)
             
-            createWire()
+            if wireNodes.count == 0 {
+                createWire()
+            }
         }
         
     }

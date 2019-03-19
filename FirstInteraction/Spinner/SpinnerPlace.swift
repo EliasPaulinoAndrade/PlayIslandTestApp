@@ -19,16 +19,12 @@ class SpinnerPlace: SCNNode {
         
         spinnerNode.position.z = 15
         spinnerNode.position.y = -21
-        
 //        spinnerNode.eulerAngles.x -= Float.pi/6
         
         spinnerNode.runAction(SCNAction.sequence([
             SCNAction.wait(duration: 2.3),
             SCNAction.moveBy(x: 0, y: 30, z: 0, duration: 0.6)
         ]))
-        
-//        spinnerNode.physicsBody = SCNPhysicsBody.init(type: .dynamic, shape: nil)
-        spinnerNode.physicsBody?.isAffectedByGravity = false
         
         return spinnerNode
     }()
