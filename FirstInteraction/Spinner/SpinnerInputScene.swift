@@ -112,20 +112,20 @@ class SpinnerInputScene: SKScene {
               spinnerInput.thereIsASpinner == true,
               let point = touches.first?.location(in: self),
               let beginPoint = self.beginPoint,
-              point != beginPoint,
-              let lastPoint = self.lastPoint,
-              let lastPointTime = self.lastPointTime else {
+              point != beginPoint
+              /*,let lastPoint = self.lastPoint,
+              let lastPointTime = self.lastPointTime*/ else {
                 
             return
         }
         
-        let currentTime = CFAbsoluteTimeGetCurrent()
-        let distance = lastPoint.distance(to: point)
-        let timeDifference = currentTime - lastPointTime
+//        let currentTime = CFAbsoluteTimeGetCurrent()
+//        let distance = lastPoint.distance(to: point)
+//        let timeDifference = currentTime - lastPointTime
+//
+//        let velocity = distance / CGFloat(timeDifference)
         
-        let velocity = distance / CGFloat(timeDifference)
-        
-        print(distance, timeDifference)
+//        print(distance, timeDifference)
         
         if point.x < beginPoint.x - 40 {
             self.spinnerInput?.spinnerDelegate?.needAddSpinner(to: .left)
@@ -147,7 +147,7 @@ class SpinnerInputScene: SKScene {
         
         
         if let view = self.view {
-            wireButton.position = CGPoint.init(x: 0, y: -view.frame.height/2 + 40)
+            wireButton.position = CGPoint.init(x: 0, y: -view.frame.height/2 + 50)
         }
         
         spinnerInput.thereIsASpinner = false

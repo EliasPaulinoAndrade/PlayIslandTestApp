@@ -9,6 +9,7 @@
 import UIKit
 import QuartzCore
 import SceneKit
+import ARKit
 
 class GameViewController: UIViewController {
     
@@ -176,6 +177,35 @@ class GameViewController: UIViewController {
         return endGameView
     }()
     
+    lazy var arButton: UIView = {
+        let arButton = UIImageView.init()
+        
+        arButton.clipsToBounds = true
+        arButton.layer.cornerRadius = 35
+        arButton.backgroundColor = UIColor.red
+        
+        return arButton
+    }()
+    
+    lazy var arView: ARView = {
+        let arView = self.gameType == .spin ? ARView.init(withGameType: self.gameType, withSlots: spinnerSlots) : ARView.init(withGameType: self.gameType, withSlots: pieceSlots)
+        
+        arView.scene = SCNScene.init()
+        
+        return arView
+    }()
+    
+    lazy var arBackButton: UIImageView = {
+        let arBackButton = UIImageView.init()
+        
+        arBackButton.clipsToBounds = true
+        arBackButton.layer.cornerRadius = 35
+        arBackButton.backgroundColor = UIColor.red
+        arBackButton.isUserInteractionEnabled = true
+        
+        return arBackButton
+    }()
+    
     init(withPieces pieces: [PieceSlot]) {
         self.pieceSlots = pieces
         self.gameType = .blocks
@@ -215,9 +245,12 @@ class GameViewController: UIViewController {
         if gameType == .spin {
             self.sceneView.scene?.rootNode.addChildNode(spinnerPlace)
             self.view.addSubview(spinnerInput)
+        } else  if gameType == .blocks {
+            setupArButton()
         }
         
         self.view.addSubview(piecesPicker)
+        self.view.addSubview(arView)
        
         self.sceneView.backgroundColor = UIColor.clear
         self.view.layer.insertSublayer(linearGradientLayer, at: 0)
@@ -230,6 +263,27 @@ class GameViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         linearGradientLayer.frame = self.view.bounds
         
+    }
+    
+    func setupArButton() {
+        self.view.addSubview(arButton)
+        arButton.translatesAutoresizingMaskIntoConstraints = false
+        arButton.isUserInteractionEnabled = true
+        
+        arButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
+        arButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
+        arButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
+        arButton.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        
+        arButton.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(arButtonTapped(tapGestureRecognizer:))))
+    }
+    
+    @objc func arButtonTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        self.arView.setupARView()
+    }
+    
+    @objc func arBackButtonTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        arView.stopARView()
     }
     
     func setupSceneView() {

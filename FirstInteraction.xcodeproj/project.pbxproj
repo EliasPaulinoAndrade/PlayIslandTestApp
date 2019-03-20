@@ -16,6 +16,8 @@
 		E3118C88224115EA000306B1 /* SpinnerSlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3118C87224115EA000306B1 /* SpinnerSlot.swift */; };
 		E3118C8A22414DA7000306B1 /* CGPoint+distance.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3118C8922414DA7000306B1 /* CGPoint+distance.swift */; };
 		E3118C8C22415A12000306B1 /* SpinnerDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3118C8B22415A12000306B1 /* SpinnerDirection.swift */; };
+		E318A6F922425B1100A910C3 /* ARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E318A6F822425B1100A910C3 /* ARView.swift */; };
+		E318A6FB22427C8E00A910C3 /* SanboxType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E318A6FA22427C8E00A910C3 /* SanboxType.swift */; };
 		E34E1205223FE22700F29365 /* GameType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34E1204223FE22700F29365 /* GameType.swift */; };
 		E354DEF6223E8144004E34D2 /* PieceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E354DEF5223E8144004E34D2 /* PieceType.swift */; };
 		E354DEF8223E823D004E34D2 /* PiecesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E354DEF7223E823D004E34D2 /* PiecesFactory.swift */; };
@@ -23,6 +25,7 @@
 		E354DEFC223E887A004E34D2 /* PieceSolt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E354DEFB223E887A004E34D2 /* PieceSolt.swift */; };
 		E3B3A7FA2241B33600637094 /* SkyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B3A7F92241B33600637094 /* SkyType.swift */; };
 		E3B3A7FC2241D12600637094 /* launchSpinner.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E3B3A7FB2241D12600637094 /* launchSpinner.mp3 */; };
+		E3B3A7FF2241DE4500637094 /* PlaneIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B3A7FE2241DE4500637094 /* PlaneIndicator.swift */; };
 		E3DBF4CE223DED9000E2F274 /* PieceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DBF4CD223DED9000E2F274 /* PieceCollectionViewCell.swift */; };
 		E3DBF4D0223DF4F200E2F274 /* Piece.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DBF4CF223DF4F200E2F274 /* Piece.swift */; };
 		E3DD9BF2223EA9FA00D87490 /* SoundsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3DD9BF1223EA9FA00D87490 /* SoundsService.swift */; };
@@ -53,6 +56,8 @@
 		E3118C87224115EA000306B1 /* SpinnerSlot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerSlot.swift; sourceTree = "<group>"; };
 		E3118C8922414DA7000306B1 /* CGPoint+distance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+distance.swift"; sourceTree = "<group>"; };
 		E3118C8B22415A12000306B1 /* SpinnerDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerDirection.swift; sourceTree = "<group>"; };
+		E318A6F822425B1100A910C3 /* ARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARView.swift; sourceTree = "<group>"; };
+		E318A6FA22427C8E00A910C3 /* SanboxType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SanboxType.swift; sourceTree = "<group>"; };
 		E34E1204223FE22700F29365 /* GameType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameType.swift; sourceTree = "<group>"; };
 		E354DEF5223E8144004E34D2 /* PieceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceType.swift; sourceTree = "<group>"; };
 		E354DEF7223E823D004E34D2 /* PiecesFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiecesFactory.swift; sourceTree = "<group>"; };
@@ -60,6 +65,7 @@
 		E354DEFB223E887A004E34D2 /* PieceSolt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceSolt.swift; sourceTree = "<group>"; };
 		E3B3A7F92241B33600637094 /* SkyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkyType.swift; sourceTree = "<group>"; };
 		E3B3A7FB2241D12600637094 /* launchSpinner.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = launchSpinner.mp3; sourceTree = "<group>"; };
+		E3B3A7FE2241DE4500637094 /* PlaneIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaneIndicator.swift; sourceTree = "<group>"; };
 		E3DBF4CD223DED9000E2F274 /* PieceCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceCollectionViewCell.swift; sourceTree = "<group>"; };
 		E3DBF4CF223DF4F200E2F274 /* Piece.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Piece.swift; sourceTree = "<group>"; };
 		E3DD9BF1223EA9FA00D87490 /* SoundsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundsService.swift; sourceTree = "<group>"; };
@@ -115,6 +121,15 @@
 			path = PiecesFactory;
 			sourceTree = "<group>";
 		};
+		E3B3A7FD2241DE3200637094 /* AR */ = {
+			isa = PBXGroup;
+			children = (
+				E3B3A7FE2241DE4500637094 /* PlaneIndicator.swift */,
+				E318A6F822425B1100A910C3 /* ARView.swift */,
+			);
+			path = AR;
+			sourceTree = "<group>";
+		};
 		E3DD9BF0223EA93F00D87490 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
@@ -155,6 +170,7 @@
 		E3EC7307223C1B6200AEB8DD /* FirstInteraction */ = {
 			isa = PBXGroup;
 			children = (
+				E3B3A7FD2241DE3200637094 /* AR */,
 				E3118C7622400934000306B1 /* Spinner */,
 				E3DD9BF7223EB0A600D87490 /* Collisions */,
 				E3DD9BF0223EA93F00D87490 /* Sounds */,
@@ -191,6 +207,7 @@
 			children = (
 				E3EC7320223C261E00AEB8DD /* SandBoxPlace.swift */,
 				E3EC732A223D0F7D00AEB8DD /* PieceDescriptor.swift */,
+				E318A6FA22427C8E00A910C3 /* SanboxType.swift */,
 			);
 			path = SandBox;
 			sourceTree = "<group>";
@@ -292,12 +309,15 @@
 				E3118C7A224043F6000306B1 /* SpinnerInputDelegate.swift in Sources */,
 				E3118C88224115EA000306B1 /* SpinnerSlot.swift in Sources */,
 				E3118C8222408075000306B1 /* SpinnerInputScene.swift in Sources */,
+				E318A6F922425B1100A910C3 /* ARView.swift in Sources */,
 				E3EC7325223C321900AEB8DD /* PiecesPicker.swift in Sources */,
 				E354DEF8223E823D004E34D2 /* PiecesFactory.swift in Sources */,
 				E3118C8A22414DA7000306B1 /* CGPoint+distance.swift in Sources */,
 				E3EC732B223D0F7D00AEB8DD /* PieceDescriptor.swift in Sources */,
 				E3118C782240094E000306B1 /* SpinnerPlace.swift in Sources */,
 				E3118C8C22415A12000306B1 /* SpinnerDirection.swift in Sources */,
+				E318A6FB22427C8E00A910C3 /* SanboxType.swift in Sources */,
+				E3B3A7FF2241DE4500637094 /* PlaneIndicator.swift in Sources */,
 				E3DBF4D0223DF4F200E2F274 /* Piece.swift in Sources */,
 				E3118C7C2240474D000306B1 /* SpinnerInput.swift in Sources */,
 				E3DD9BF4223EAA2400D87490 /* SoundName.swift in Sources */,
@@ -377,7 +397,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -432,7 +452,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

@@ -24,6 +24,8 @@ class SandBoxPlace: SCNNode {
     var motion = CMMotionManager.init()
     var timer: Timer?
     
+    var type: SandboxType
+    
     private var addingPiece: PieceDescriptor?
     
     private var pieces: [SCNNode: PieceDescriptor] = [:]
@@ -70,29 +72,40 @@ class SandBoxPlace: SCNNode {
     }()
     
     lazy var placePlaneNode: SCNNode = {
-        let placePlane = SCNBox.init(width: self.width, height: self.height, length: 1, chamferRadius: 0)
+        let placePlane = SCNBox.init(width: self.width, height: self.height, length: self.type == .ar ? 0.0001 : 0.1, chamferRadius: 0)
         placePlane.firstMaterial?.diffuse.contents = UIImage(named: "mountainMaterial")
         placePlane.firstMaterial?.isDoubleSided = true
         
         var placePlaneNode = SCNNode.init(geometry: placePlane)
         placePlaneNode.position = SCNVector3.zero
-        placePlaneNode.position.y -= 1.1
         placePlaneNode.eulerAngles.x += Float.pi / 2.0
+        placePlaneNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+        placePlaneNode.physicsBody?.isAffectedByGravity = false
         
-        placePlaneNode.runAction(SCNAction.sequence([
-            SCNAction.wait(duration: 2.5),
-            SCNAction.move(to: SCNVector3.init(0, -0.5, 0), duration: 0.5),
-            SCNAction.run({ (_) in
-                placePlaneNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
-                placePlaneNode.physicsBody?.isAffectedByGravity = false
-
-                placePlaneNode.physicsBody?.angularDamping = 1
-                placePlaneNode.physicsBody?.friction = 1
-                placePlaneNode.physicsBody?.restitution = 0
-                placePlaneNode.categoryBitMask = CategoryMask.floor.rawValue
-                placePlaneNode.categoryBitMask = CategoryMask.piece.rawValue
-            }
-        )]))
+        if self.type == .ar {
+            placePlaneNode.physicsBody?.angularDamping = 1
+            placePlaneNode.physicsBody?.friction = 1
+            placePlaneNode.physicsBody?.restitution = 0
+            placePlaneNode.categoryBitMask = CategoryMask.floor.rawValue
+            placePlaneNode.categoryBitMask = CategoryMask.piece.rawValue
+        } else {
+            placePlaneNode.position.y -= 1.1
+            
+            placePlaneNode.runAction(SCNAction.sequence([
+                SCNAction.wait(duration: 2.5),
+                SCNAction.move(to: SCNVector3.init(0, -0.5, 0), duration: 0.5),
+                SCNAction.run({ (_) in
+                    placePlaneNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+                    placePlaneNode.physicsBody?.isAffectedByGravity = false
+    
+                    placePlaneNode.physicsBody?.angularDamping = 1
+                    placePlaneNode.physicsBody?.friction = 1
+                    placePlaneNode.physicsBody?.restitution = 0
+                    placePlaneNode.categoryBitMask = CategoryMask.floor.rawValue
+                    placePlaneNode.categoryBitMask = CategoryMask.piece.rawValue
+                }
+            )]))
+        }
         
         return placePlaneNode
     }()
@@ -106,7 +119,7 @@ class SandBoxPlace: SCNNode {
         overlayPlaneNode.position = SCNVector3.zero
         overlayPlaneNode.position.y += self.overlayDistance
         overlayPlaneNode.eulerAngles.x += Float.pi / 2.0
-        overlayPlaneNode.opacity = 0.001
+        overlayPlaneNode.opacity = 0.2
         
         return overlayPlaneNode
     }()
@@ -119,18 +132,19 @@ class SandBoxPlace: SCNNode {
         let floorOverlayPlaneNode = SCNNode.init(geometry: floorOverlayPlane)
         floorOverlayPlaneNode.position = SCNVector3.zero
         floorOverlayPlaneNode.eulerAngles.x += Float.pi / 2.0
-        floorOverlayPlaneNode.opacity = 0.001
+        floorOverlayPlaneNode.opacity = 0.2
         
         return floorOverlayPlaneNode
     }()
     
-    init(withHeight height: CGFloat, width: CGFloat, overlayDistance: Float, minimumOfLines: Int, andSceneView sceneView: SCNView) {
+    init(withHeight height: CGFloat, width: CGFloat, overlayDistance: Float, minimumOfLines: Int, andSceneView sceneView: SCNView, type: SandboxType = .normal, andAnchorPosition anchorPosition: simd_float3? = nil) {
         
         self.height = height
         self.width = width
         self.overlayDistance = overlayDistance
         self.sceneView = sceneView
         self.minimumNumberOfLines = minimumOfLines
+        self.type = type
         
         super.init()
         
@@ -138,8 +152,20 @@ class SandBoxPlace: SCNNode {
         addChildNode(overlayPlaneNode)
         addChildNode(floorOverlayPlaneNode)
         
+        if let anchorPosition = anchorPosition {
+            self.simdPosition = anchorPosition
+            placePlaneNode.simdPosition = anchorPosition
+            overlayPlaneNode.simdPosition = anchorPosition
+            overlayPlaneNode.simdPosition.y += self.overlayDistance
+            floorOverlayPlaneNode.simdPosition = anchorPosition
+        }
+            
         sceneView.addGestureRecognizer(UILongPressGestureRecognizer.init(target: self, action: #selector(sceneWasLongPressed(longPressGestureRecognizer:))))
-        sceneView.scene?.physicsWorld.gravity.y = -20
+        if type == .normal {
+            
+            sceneView.scene?.physicsWorld.gravity.y = -20
+        }
+        
         sceneView.scene?.physicsWorld.contactDelegate = self
         
     }
@@ -233,9 +259,9 @@ class SandBoxPlace: SCNNode {
             var overlayPoint = piecePoint
             
             if arHitResult.node == overlayPlaneNode {
-                overlayPoint.y -= self.overlayDistance - 0.002
+                overlayPoint.y -= self.overlayDistance
             } else {
-                overlayPoint.y += 0.002
+                overlayPoint.y += 0
             }
             
             allPiecesOpacity(0.7)
@@ -253,7 +279,12 @@ class SandBoxPlace: SCNNode {
             piecePoint.y += Float(addingObjectRealSize.height/2)
             
             floorOverlayNode.scale = SCNVector3.init(addingObjectGridSize.width, 1, addingObjectGridSize.height)
-            floorOverlayNode.pivot = SCNMatrix4MakeTranslation(0.5, 0, 0.5)
+            
+            if self.type == .ar {
+//                floorOverlayNode.pivot = SCNMatrix4MakeTranslation(0.025, 0, 0.025)
+            } else {
+                floorOverlayNode.pivot = SCNMatrix4MakeTranslation(0.5, 0, 0.5)
+            }
             
             addingNode.pieceNode.runAction(SCNAction.move(to: piecePoint, duration: 0.05))
             
@@ -270,15 +301,20 @@ class SandBoxPlace: SCNNode {
         if let addingPiece = self.addingPiece {
             allPiecesOpacity(1)
             addingPiece.pieceNode.removeAllActions()
-            addingPiece.pieceNode.position.y += 20
+            
+            if self.type == .ar {
+                addingPiece.pieceNode.position.y += 1
+            } else {
+                addingPiece.pieceNode.position.y += 20
+            }
             
             let gridSize = self.gridSize
             let addingPieceSize = addingPiece.scaledSize(gridSize: gridSize)
 
             let physicsGeometry = SCNBox.init(
-                width: addingPieceSize.width - 0.1,
+                width: addingPieceSize.width,
                 height: addingPieceSize.height,
-                length: addingPieceSize.depth - 0.1,
+                length: addingPieceSize.depth,
                 chamferRadius: 0
             )
             
@@ -369,37 +405,7 @@ class SandBoxPlace: SCNNode {
             
             spinnerNode.physicsBody?.velocity = randomForce
         }
-        
-        // Make sure the accelerometer hardware is available.
-        if self.motion.isAccelerometerAvailable {
-            self.motion.accelerometerUpdateInterval = 1.0 / 60.0  // 60 Hz
-            self.motion.startAccelerometerUpdates()
-            
-            // Configure a timer to fetch the data.
-            self.timer = Timer(fire: Date(), interval: (1.0/60.0),
-                               repeats: true, block: { (timer) in
-                // Get the accelerometer data.
-                if let data = self.motion.accelerometerData {
-                    let x = data.acceleration.x
-                    let y = data.acceleration.y
-                    let z = data.acceleration.z
-                    
-                    print(x, y, z)
-                    
-                    let randomForce = SCNVector3.init(x/2, 0, -y/2)
-                    spinnerNode.physicsBody?.applyForce(randomForce, asImpulse: true)
-                }
-            })
-            
-            // Add the timer to the current run loop.
-            RunLoop.current.add(self.timer!, forMode: .default)
-        }
-    }
-    
-    func startAccelerometers() {
-        
-    }
-    
+    }    
 }
 
 extension SandBoxPlace: SCNPhysicsContactDelegate {
