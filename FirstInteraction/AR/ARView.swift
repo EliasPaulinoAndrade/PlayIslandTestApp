@@ -146,9 +146,9 @@ extension ARView: ARSCNViewDelegate, ARSessionDelegate, SCNSceneRendererDelegate
         
         DispatchQueue.main.async {
             self.sandBox = SandBoxPlace.init(withHeight: CGFloat(planeAnchor.extent.z), width: CGFloat(planeAnchor.extent.x), overlayDistance: 0.4, minimumOfLines: 10, andSceneView: self, type: .ar, andAnchorPosition: planeAnchor.center)
-        
-            
-            self.scene.rootNode.addChildNode(self.sandBox!)
+            self.sandBox?.globalNode = node
+
+            node.addChildNode(self.sandBox!)
         }
         
         
@@ -163,7 +163,7 @@ extension ARView: ARSCNViewDelegate, ARSessionDelegate, SCNSceneRendererDelegate
         hasDetectedPlane = true
 //
         
-//        self.scene.rootNode.addChildNode(plane)
+//      node.addChildNode(plane)
        
         
     }

@@ -26,6 +26,8 @@ class SandBoxPlace: SCNNode {
     
     var type: SandboxType
     
+    var globalNode: SCNNode?
+    
     private var addingPiece: PieceDescriptor?
     
     private var pieces: [SCNNode: PieceDescriptor] = [:]
@@ -119,7 +121,7 @@ class SandBoxPlace: SCNNode {
         overlayPlaneNode.position = SCNVector3.zero
         overlayPlaneNode.position.y += self.overlayDistance
         overlayPlaneNode.eulerAngles.x += Float.pi / 2.0
-        overlayPlaneNode.opacity = 0.2
+        overlayPlaneNode.opacity = 0.001
         
         return overlayPlaneNode
     }()
@@ -132,7 +134,7 @@ class SandBoxPlace: SCNNode {
         let floorOverlayPlaneNode = SCNNode.init(geometry: floorOverlayPlane)
         floorOverlayPlaneNode.position = SCNVector3.zero
         floorOverlayPlaneNode.eulerAngles.x += Float.pi / 2.0
-        floorOverlayPlaneNode.opacity = 0.2
+        floorOverlayPlaneNode.opacity = 0.001
         
         return floorOverlayPlaneNode
     }()

@@ -417,7 +417,6 @@ class GameViewController: UIViewController {
             return .all
         }
     }
-    var teste = 0
 }
 
 extension GameViewController: PiecePickerDelegate {

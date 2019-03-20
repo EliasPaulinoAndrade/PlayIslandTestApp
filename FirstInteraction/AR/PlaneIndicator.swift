@@ -58,6 +58,9 @@ class Plane: SCNNode {
         
         super.init()
         
+        extentNode.opacity = 0.6
+        
+        
         self.setupMeshVisualStyle()
         self.setupExtentVisualStyle()
         
