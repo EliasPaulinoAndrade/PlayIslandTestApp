@@ -56,6 +56,12 @@ class GameViewController: UIViewController {
                 if self.gameType == .blocks {
                     self.sceneView.allowsCameraControl = true
                 }
+                if self.gameType == .spin {
+                    DispatchQueue.main.async {
+                        self.sceneView.scene?.rootNode.addChildNode(self.spinnerPlace)
+                        self.view.addSubview(self.spinnerInput)
+                    }
+                }
             })
         ]))
         
@@ -142,7 +148,10 @@ class GameViewController: UIViewController {
     }()
     
     lazy var spinnerPlace: SpinnerPlace = {
-        return SpinnerPlace.init(withScene: sceneView, andParentView: view, andFirstSpinnerColor: self.spinnerSlots.first?.color)
+        
+        let spinnerPlace = SpinnerPlace.init(withScene: sceneView, andParentView: view, andFirstSpinnerColor: self.spinnerSlots.first?.color)
+        
+        return spinnerPlace
     }()
     
     lazy var spinnerInput: SpinnerInput = {
@@ -242,15 +251,7 @@ class GameViewController: UIViewController {
         
         setupSceneView()
         
-        if gameType == .spin {
-            self.sceneView.scene?.rootNode.addChildNode(spinnerPlace)
-            self.view.addSubview(spinnerInput)
-        } else  if gameType == .blocks {
-            setupArButton()
-        }
-        
         self.view.addSubview(piecesPicker)
-        self.view.addSubview(arView)
        
         self.sceneView.backgroundColor = UIColor.clear
         self.view.layer.insertSublayer(linearGradientLayer, at: 0)

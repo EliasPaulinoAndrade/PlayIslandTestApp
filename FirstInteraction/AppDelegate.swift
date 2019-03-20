@@ -42,7 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow.init(frame: UIScreen.main.bounds)
         
-        let firstController = GameViewController.init(withPieces: AppDelegate.slots)
+        let firstController = GameViewController.init(withSpinners: AppDelegate.spinners)
         
         window?.rootViewController = firstController
         window?.makeKeyAndVisible()
@@ -71,7 +71,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
 }
 
