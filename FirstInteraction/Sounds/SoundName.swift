@@ -14,4 +14,5 @@ enum SoundsName: String {
     case falling
     case didFall
     case didBeginDrag
+    case launchSpinner
 }

@@ -16,13 +16,14 @@ class SpinnerInputScene: SKScene {
     var beginPoint: CGPoint?
     var lastPoint: CGPoint?
     var lastPointTime: CFAbsoluteTime?
+    var soundService = SoundsService()
     
-    lazy var wireButton: SKShapeNode = {
-        let wireButton = SKShapeNode.init(circleOfRadius: 40)
+    lazy var wireButton: SKSpriteNode = {
+        let texture = SKTexture.init(image: UIImage.init(named: "runSpinnerButton") ?? UIImage.init())
+        let wireButton = SKSpriteNode.init(texture: texture)
         
-        wireButton.fillColor = UIColor.white
-        wireButton.strokeColor = UIColor.init(named: "menuBorder") ?? UIColor.clear
-        wireButton.lineWidth = 3
+        wireButton.scale(to: CGSize.init(width: 85, height: 85))
+
         wireButton.physicsBody = SKPhysicsBody.init(circleOfRadius: 40)
         wireButton.physicsBody?.affectedByGravity = false
         wireButton.physicsBody?.isDynamic = false
@@ -61,7 +62,7 @@ class SpinnerInputScene: SKScene {
         view.backgroundColor = UIColor.clear
         if let view = self.view {
             
-            wireButton.position = CGPoint.init(x: 0, y: -view.frame.height/2 + 40)
+            wireButton.position = CGPoint.init(x: 0, y: -view.frame.height/2 + 50)
             placeHolderButton.position = CGPoint.init(x: 20, y: -view.frame.height/2 - 80)
         }
     }
@@ -69,7 +70,7 @@ class SpinnerInputScene: SKScene {
     func sizeOfParentChanged() {
         if let view = self.view {
             
-            wireButton.position = CGPoint.init(x: 0, y: -view.frame.height/2 + 40)
+            wireButton.position = CGPoint.init(x: 0, y: -view.frame.height/2 + 50)
             placeHolderButton.position = CGPoint.init(x: -40, y: -view.frame.height/2 - 80)
             
             if wireNodes.count == 0 {
@@ -150,6 +151,8 @@ class SpinnerInputScene: SKScene {
         }
         
         spinnerInput.thereIsASpinner = false
+        
+        soundService.didLauchSpinner()
     }
     
     func fallWire() {

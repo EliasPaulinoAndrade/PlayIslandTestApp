@@ -17,6 +17,7 @@ class GameViewController: UIViewController {
     private var piecesFactory = PiecesFactory()
     private var pieceSlots: [PieceSlot] = []
     private var spinnerSlots: [SpinnerSlot] = []
+    private var skyType: SkyType
     
     lazy var piecesPicker: PiecesPicker = {
         
@@ -54,8 +55,6 @@ class GameViewController: UIViewController {
                 if self.gameType == .blocks {
                     self.sceneView.allowsCameraControl = true
                 }
-                
-//                self.sandBox.needAddSpinner(spinnerNode: self.spinnerPlace.spinnerNode)
             })
         ]))
         
@@ -68,7 +67,13 @@ class GameViewController: UIViewController {
         let lightNode = SCNNode()
         lightNode.light = SCNLight()
         lightNode.light?.type = .omni
-        lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
+        lightNode.position = SCNVector3(x: 0, y: 10, z: 0)
+        
+        if self.skyType == .afternoon {
+            lightNode.light?.intensity = 2000
+            lightNode.position.z = 10
+            lightNode.position.y = 15
+        }
         
         return lightNode
     }()
@@ -114,13 +119,23 @@ class GameViewController: UIViewController {
     lazy var linearGradientLayer: CAGradientLayer = {
         let linearGradientLayer = CAGradientLayer()
         
-        guard let colorTop = UIColor.init(named: "backgroundColor")?.cgColor,
-              let colorBottom = UIColor.init(named: "backgroundColorLight")?.cgColor else {
-            return linearGradientLayer
+        if self.skyType == .night {
+            guard let colorTop = UIColor.init(named: "backgroundColor")?.cgColor,
+                let colorBottom = UIColor.init(named: "backgroundColorLight")?.cgColor else {
+                    return linearGradientLayer
+            }
+            
+            linearGradientLayer.colors = [colorBottom, colorTop, colorTop]
+            linearGradientLayer.locations = [ 0.0, 0.1, 1.0]
+        } else if self.skyType == .afternoon {
+            guard let colorTop = UIColor.init(named: "backgroundAfterLight")?.cgColor,
+                let colorBottom = UIColor.init(named: "backgroundAfter")?.cgColor else {
+                    return linearGradientLayer
+            }
+            
+            linearGradientLayer.colors = [colorBottom, colorTop]
+            linearGradientLayer.locations = [ 0.0, 1.0]
         }
-    
-        linearGradientLayer.colors = [colorBottom, colorTop, colorTop]
-        linearGradientLayer.locations = [ 0.0, 0.1, 1.0]
         
         return linearGradientLayer
     }()
@@ -164,12 +179,14 @@ class GameViewController: UIViewController {
     init(withPieces pieces: [PieceSlot]) {
         self.pieceSlots = pieces
         self.gameType = .blocks
+        self.skyType = .night
         super.init(nibName: nil, bundle: nil)
     }
     
     init(withSpinners spinners: [SpinnerSlot]) {
         self.gameType = .spin
         self.spinnerSlots = spinners
+        self.skyType = .afternoon
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -204,8 +221,10 @@ class GameViewController: UIViewController {
        
         self.sceneView.backgroundColor = UIColor.clear
         self.view.layer.insertSublayer(linearGradientLayer, at: 0)
-        generateStars()
         
+        if skyType == .night {
+            generateStars()
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -242,6 +261,7 @@ class GameViewController: UIViewController {
     func showEndGameView() {
         
         self.view.addSubview(endGameBackView)
+        
         self.view.addSubview(endGameView)
         
         endGameBackView.translatesAutoresizingMaskIntoConstraints = false
@@ -255,6 +275,11 @@ class GameViewController: UIViewController {
         endGameView.heightAnchor.constraint(equalToConstant: 400).isActive = true
         endGameView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         endGameView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+        endGameView.layer.opacity = 0
+        UIView.animate(withDuration: 0.5) {
+            self.endGameView.layer.opacity = 1
+        }
         
         let endGameLabel = UILabel.init()
         endGameLabel.text = "Seus Peões Acabaram"
@@ -379,7 +404,9 @@ extension GameViewController: SpinnerInputDelegate {
                 self.spinnerInput.needResetView()
             } else {
                 DispatchQueue.main.async {
-                    self.showEndGameView()
+                    Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: { (_) in
+                        self.showEndGameView()
+                    })
                 }
             }
         }

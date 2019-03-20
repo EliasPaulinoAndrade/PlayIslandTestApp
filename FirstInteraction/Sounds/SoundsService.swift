@@ -30,6 +30,11 @@ class SoundsService {
         
     }
     
+    func didLauchSpinner(){
+        prepareAndPlay(forResource: .launchSpinner)?.volume = 0.2
+        
+    }
+    
     func prepareAndPlay(forResource: SoundsName, ofType: String = "mp3", repeating: Bool = false) -> AVAudioPlayer? {
         if let audioPlayer = self.audioPlayers[forResource] {
             audioPlayer?.numberOfLoops = repeating ? 2 : 0

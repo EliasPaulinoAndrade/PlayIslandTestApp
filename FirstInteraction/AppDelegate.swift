@@ -29,7 +29,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     static let spinners: [SpinnerSlot] = [
         SpinnerSlot.init(color: .blue),
-        SpinnerSlot.init(color: .green)
+        SpinnerSlot.init(color: .green),
+        SpinnerSlot.init(color: .pink),
+        SpinnerSlot.init(color: .red),
+        SpinnerSlot.init(color: .blue),
+        SpinnerSlot.init(color: .green),
+        SpinnerSlot.init(color: .pink),
+        SpinnerSlot.init(color: .red)
     ]
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
